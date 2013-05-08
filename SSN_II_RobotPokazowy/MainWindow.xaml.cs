@@ -933,51 +933,11 @@ namespace SSN_II_RobotPokazowy
 
         private void SliderL_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            /*
-            double rectHeight = ((slider_L.Value + 100) / 2);
-
-            // dla lewego
-            if (rectHeight >= 50)
-            {
-                rect_mL.Visibility = Visibility.Hidden;
-                rect_mL_bgr.Visibility = Visibility.Visible;
-                rect_mL_bgr.Height = rectHeight - 50;
-            }
-            else
-            {
-                rect_mL_bgr.Visibility = Visibility.Hidden;
-                rect_mL.Visibility = Visibility.Visible;
-                rect_mL.Height = 50 - rectHeight;
-            }
-
-            lbl_ML.Content = slider_L.Value;
-             * */
-
             PresentMotorSpeed((int)slider_P.Value, (int)slider_L.Value);
         }
 
         private void SliderP_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            /*
-            double rectHeight = ((slider_P.Value + 100) / 2);
-
-            // dla prawego
-            if (rectHeight >= 50)
-            {
-                rect_mP.Visibility = Visibility.Hidden;
-                rect_mP_bgr.Visibility = Visibility.Visible;
-                rect_mP_bgr.Height = rectHeight - 50;
-            }
-            else
-            {
-                rect_mP_bgr.Visibility = Visibility.Hidden;
-                rect_mP.Visibility = Visibility.Visible;
-                rect_mP.Height = 50 - rectHeight;
-            }
-
-            lbl_MR.Content = slider_P.Value;
-             * */
-
             PresentMotorSpeed((int)slider_P.Value, (int)slider_L.Value);
         }
 
@@ -1042,7 +1002,6 @@ namespace SSN_II_RobotPokazowy
             {
                 btn_dioda_5.Background = blackBrush;
             }
-
         }
 
         private void PresentMotorSpeed(int speedRight, int speedLeft)
@@ -1095,8 +1054,6 @@ namespace SSN_II_RobotPokazowy
             lbl_ML.Content = speedLeft;
         }
 
-        string filename = "Kasia Kowalska";
-        int dlugosc = 15000;
         private void PresentSound(string filename, int dlugosc)
         {
             lbl_nazwaUtworu.Content = filename;
@@ -1105,66 +1062,43 @@ namespace SSN_II_RobotPokazowy
 
         private void SoundButton(object sender, RoutedEventArgs e)
         {
+            string filename = "Kasia Kowalska";
+            int dlugosc = 15000;
+
             PresentSound(filename, dlugosc);
         }
 
-
         private void powerSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            // temporary solution
             double value = powerSlider.Value / powerSlider.Maximum * robot.Inputs.Power.VoltageMaxValue;
 
             robot.Inputs.Power.Update(value);
 
-            PresentPower(robot.Inputs.Power.Voltage, robot.Inputs.Power.VoltageMaxValue, robot.Inputs.Power.Status);
+            PresentPower(robot.Inputs.Power);
         }
 
-        private void PresentPower(double value, double max, CPower.PowerStatus ps)
+        private void PresentPower(CPower power)
         {
-            double width = value / robot.Inputs.Power.VoltageMaxValue * 400;
+            double width = power.Voltage / robot.Inputs.Power.VoltageMaxValue * 400;
 
             rect_Voltage.Width = width;
 
-            if (ps == CPower.PowerStatus.Critical)
+            if (power.Status == CPower.PowerStatus.Critical)
             {
                 rect_Voltage.Fill = Brushes.Red;
-                ps = CPower.PowerStatus.Critical;
             }
-            else if (ps == CPower.PowerStatus.Warning)
+            else if (power.Status == CPower.PowerStatus.Warning)
             {
                 rect_Voltage.Fill = Brushes.Orange;
-                ps = CPower.PowerStatus.Warning;
             }
             else
             {
                 rect_Voltage.Fill = Brushes.Green;
-                ps = CPower.PowerStatus.Normal;
             }
-            lbl_Voltage.Content = value.ToString("00.00");
-            lbl_VoltageEnum.Content = ps;
-        }
 
-        private void PresentPower2(double value, double max, CPower.PowerStatus ps)
-        {
-            double result = (value / max) * 150;
-            rect_Voltage.Width = result;
-
-            if (result <= 50)
-            {
-                rect_Voltage.Fill = Brushes.Red;
-                ps = CPower.PowerStatus.Critical;
-            }
-            else if ((result > 50) && (result < 75))
-            {
-                rect_Voltage.Fill = Brushes.Orange;
-                ps = CPower.PowerStatus.Warning;
-            }
-            else
-            {
-                rect_Voltage.Fill = Brushes.Green;
-                ps = CPower.PowerStatus.Normal;
-            }
-            lbl_Voltage.Content = value;
-            lbl_VoltageEnum.Content = ps;
+            lbl_Voltage.Content = power.Voltage.ToString("00");
+            lbl_VoltageEnum.Content = power.Status;
         }
 
         #endregion
@@ -1218,6 +1152,8 @@ namespace SSN_II_RobotPokazowy
 
         #endregion
 
+
+        // TODO - zrobić coś z tym kodem!
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (null != this.sensor)
@@ -1247,13 +1183,11 @@ namespace SSN_II_RobotPokazowy
 
         #region sound code
 
-        //NAudio.Wave.DirectSoundOut audioOutput;
         NAudio.Wave.WaveFileReader wfr;
         NAudio.Wave.WaveChannel32 wc;
         NAudio.Wave.WaveOutEvent audioOutput;
 
         bool flagSoundPlaying = false;
-
 
         private void PlaybackStopped(Object sender, NAudio.Wave.StoppedEventArgs args)
         {
@@ -1270,22 +1204,11 @@ namespace SSN_II_RobotPokazowy
                     wfr = new NAudio.Wave.WaveFileReader(soundFile);
                     wc = new NAudio.Wave.WaveChannel32(wfr) { PadWithZeroes = false };
 
-                    //audioOutput = new NAudio.Wave.DirectSoundOut();
                     audioOutput = new NAudio.Wave.WaveOutEvent();
-
                     audioOutput.Init(wc);
-
                     audioOutput.Play();
-
                     audioOutput.PlaybackStopped += PlaybackStopped;
-
-                    //while (audioOutput.PlaybackState != NAudio.Wave.PlaybackState.Stopped)
-                    {
-                        //System.Threading.Thread.Sleep(20);
-                    }
                 }
-
-                //audioOutput.Stop();
                 flagSoundPlaying = true;
             }
             else
