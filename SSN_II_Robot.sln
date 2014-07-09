@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSN_II_RobotPokazowy", "SSN_II_RobotPokazowy\SSN_II_RobotPokazowy.csproj", "{91C1E124-D82C-471F-9A2C-5BD92436EC7E}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSN_II_Robot", "SSN_II_Robot\SSN_II_Robot.csproj", "{91C1E124-D82C-471F-9A2C-5BD92436EC7E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AminExceptions", "AminExceptions\AminExceptions.csproj", "{EE18295A-173D-4EFF-82C8-03EDFA361F6D}"
 EndProject
@@ -22,8 +24,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
