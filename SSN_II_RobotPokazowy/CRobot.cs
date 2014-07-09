@@ -7,27 +7,240 @@ using System.Threading.Tasks;
 // gamepad
 using Microsoft.Xna.Framework.Input;
 
+// RS232
+using CommandMessenger;
+using CommandMessenger.TransportLayer;
+
 namespace SSN_II_RobotPokazowy
 {
     class CRobot
     {
         private const int numberOfButtons = 6;
 
+        public enum RobotState : int
+        {
+            CriticalPower = 0,
+            SequnceInProgress = 1,
+            SequenceTerminating = 2,
+            Idle = 3,
+        };
+
         public CInputs Inputs { get; set; }
         public COutputs Outputs { get; set; }
+        public RobotState CurrentState;
 
         public CRobot()
         {
+
             Inputs = new CInputs(numberOfButtons);
             Outputs = new COutputs();
+
+            this.CurrentState = RobotState.Idle;
+
+            this.InitSerialPort();
         }
 
         public void UpdateOutputsBasedOnInputs()
         {
-            this.Outputs.Motors.ConvertFromOneStickInput(this.Inputs.GamePad.GamePadState.ThumbSticks.Right.X, this.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y);
+            // todo - tu wstawić logikę robota
+            switch (this.CurrentState)
+            {
+                case RobotState.CriticalPower:
+                    {
+                        if (this.Inputs.Power.Status != CPower.PowerStatus.Critical)
+                        {
+                            this.CurrentState = RobotState.Idle;
+                        }
+                    }break;
+
+                case RobotState.Idle:
+                    {
+                        if (this.Inputs.Power.Status == CPower.PowerStatus.Critical)
+                        {
+                            this.CurrentState = RobotState.CriticalPower;
+                        }
+                        /*      NIE PAMIETAM CO TU CHCIALAM WPISAC ZA WARUNEK :(
+                        else if (this.Inputs.Buttons.ButtonsState == )
+                        {
+                            this.CurrentState = RobotState.SequnceInProgress;
+                        }
+                        */
+                    }break;
+            }
+            if (this.Inputs.Power.Status == CPower.PowerStatus.Critical)
+            {
+                this.CurrentState = RobotState.CriticalPower;
+            }
         }
+
+        #region SerialPort
+        enum Command
+        {
+            Servo = 0,          // two ints (numer serwa + pozycja 0-100), PC -> Arduino
+            MotorsPower = 1,    // two ints, PC -> Arduino
+            TouchButtonMask = 2, // one bool (maska 0 - 1) PC -> Arduino
+            ButtonsState = 3,   // two ints (napięcie + stan przycisków), Arduino -> PC
+            LedsBottom = 4,     // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
+            LedsChasis = 5,     // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
+            LedsEyes = 6,       // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
+
+            
+        };
+
+        private SerialTransport serialTransport;
+        private CmdMessenger cmdMessenger;
+
+        public void InitSerialPort()
+        {
+            this.serialTransport = new SerialTransport
+            {
+                CurrentSerialSettings = { PortName = "COM13", BaudRate = 115200, DtrEnable = false }
+            };
+
+            this.cmdMessenger = new CmdMessenger(this.serialTransport)
+            {
+                BoardType = BoardType.Bit16
+            };
+
+            this.cmdMessenger.Attach((int)Command.ButtonsState, OnButtonsStateReceived);
+
+            this.cmdMessenger.StartListening();
+
+        }
+
+        public void SendMotorsPower()
+        {
+            SendCommand command = new SendCommand((int)Command.MotorsPower);
+
+            command.AddArgument(this.Outputs.Motors.speedRightWheelDriverLevel);
+            command.AddArgument(this.Outputs.Motors.speedLeftWheelDriverLevel);
+            this.cmdMessenger.SendCommand(command);
+        }
+
+        public void SendTouchButtonMask(bool mask)
+        {
+            SendCommand command = new SendCommand((int)Command.TouchButtonMask);
+
+            command.AddArgument(mask);
+            this.cmdMessenger.SendCommand(command);
+        }
+
+        public void SendServo(CServo.ServoType servo, int position)
+        {
+            // todo dodać zabezpieczenie, żeby position było w zakresie 0-100
+            if (position >= 0 && position <= 100)
+            {
+                SendCommand command = new SendCommand((int)Command.Servo);
+
+                command.AddArgument((int)servo);
+                command.AddArgument(position);
+                this.cmdMessenger.SendCommand(command);
+            }
+        }
+
+        public void SendServo(CServo.ServoType servo)
+        {
+            int newPosition = this.Outputs.Servos.servosPosition[((int)servo) - 1];
+            
+            SendCommand command = new SendCommand((int)Command.Servo);
+
+            command.AddArgument((int)servo);
+            command.AddArgument(newPosition);
+            this.cmdMessenger.SendCommand(command);
+        }
+
+        public void SendServo()
+        {
+            /*
+            for (int i = 0; i < this.Outputs.Servos.servosPosition.Length/2; ++i)
+            {
+                int newPosition = this.Outputs.Servos.servosPosition[((int)i)];
+
+                SendCommand command = new SendCommand((int)Command.Servo);
+
+                command.AddArgument((int)(i+1));
+                command.AddArgument(newPosition);
+                this.cmdMessenger.SendCommand(command);
+            }
+            */
+            for (int i = 0; i < this.Outputs.Servos.servosChangePosition.Length; ++i)
+            {
+                if (this.Outputs.Servos.servosChangePosition[(int)i] == true)
+                {
+                    int newPosition = this.Outputs.Servos.servosPosition[((int)i)];
+                    this.Outputs.Servos.servosChangePosition[(int)i] = false;
+                    SendCommand command = new SendCommand((int)Command.Servo);
+
+                    command.AddArgument((int)(i + 1));
+                    command.AddArgument(newPosition);
+                    this.cmdMessenger.SendCommand(command);
+                }
+            }
+        }
+
+        public void SendLedsBottom(int r, int g, int b)
+        {
+            SendCommand command = new SendCommand((int)Command.LedsBottom);
+
+            command.AddArgument(r);
+            command.AddArgument(g);
+            command.AddArgument(b);
+            this.cmdMessenger.SendCommand(command);
+        }
+
+        public void SendLedsChasis(int r, int g, int b)
+        {
+            SendCommand command = new SendCommand((int)Command.LedsChasis);
+
+            command.AddArgument(r);
+            command.AddArgument(g);
+            command.AddArgument(b);
+            this.cmdMessenger.SendCommand(command);
+        }
+
+        public void SendLedsEyes(int r, int g, int b)
+        {
+            SendCommand command = new SendCommand((int)Command.LedsEyes);
+
+            command.AddArgument(r);
+            command.AddArgument(g);
+            command.AddArgument(b);
+
+            this.cmdMessenger.SendCommand(command);
+
+        }
+
+        public void Dispose()
+        {
+            // Stop listening
+            this.cmdMessenger.StopListening();
+
+            // Dispose Command Messenger
+            this.cmdMessenger.Dispose();
+
+            // Dispose Serial Port object
+            this.serialTransport.Dispose();
+
+        }
+
+        // ------------------  C A L L B A C K S ---------------------
+
+        // Called when a received command has no attached function.
+
+        void OnButtonsStateReceived(ReceivedCommand arguments)
+        {
+            int powerAsIntFromMarek = arguments.ReadInt32Arg();
+            this.Inputs.Power.Update((double)powerAsIntFromMarek / 10.0);
+
+
+            int buttonsState = arguments.ReadInt32Arg();
+            this.Inputs.Buttons.Update((byte)buttonsState);
+        }
+
+        #endregion
     }
 
+   
 
     public class CInputs
     {
@@ -64,16 +277,17 @@ namespace SSN_II_RobotPokazowy
             Normal = 2
         };
 
-        public readonly double VoltageMaxValue;
-        private const double VoltageCriticalValue = 9;
-        private const double VoltageWarningValue = 15;
+        private const double VoltageMaxValue = 15.0;
+        private const double VoltageCriticalValue = 10.0;
+        private const double VoltageWarningValue = 11.0;
 
+        public double VoltageMaxValuePresentation { get; private set; }
         public double Voltage { get; private set; }
-        public CPower.PowerStatus Status;
+        public CPower.PowerStatus Status { get; private set; }
 
         public CPower()
         {
-            this.VoltageMaxValue = 24.0;
+            this.VoltageMaxValuePresentation = VoltageMaxValue;
             this.Voltage = 0.0;
             this.Status = CPower.PowerStatus.Critical;
         }
@@ -167,11 +381,14 @@ namespace SSN_II_RobotPokazowy
         public CLeds LedsFrontLight { get; set; }
         //public CLeds Leds
 
+        public CServo Servos { get; set; }
+
         public CSound Sound { get; set; }
 
         public COutputs()
         {
             Motors = new CMotors();
+            Servos = new CServo();
         }
 
         public void Write()
@@ -187,6 +404,44 @@ namespace SSN_II_RobotPokazowy
 
     public class CServo
     {
+        public enum ServoType
+        {
+            Right1 = 1,
+            Right2 = 2,
+            Right3 = 3,
+            Right4 = 4,
+            Left1 = 5,
+            Left2 = 6,
+            Left3 = 7,
+            Left4 = 8,
+        };
+
+        private const int numberOfServos = 8;
+        public int[] servosPosition;
+        public bool[] servosChangePosition;
+
+        public CServo()
+        {
+            servosPosition = new int[numberOfServos];
+            servosChangePosition = new bool[numberOfServos];
+
+            for (int i = 0; i < numberOfServos; ++i)
+            {
+                servosPosition[i] = 50;
+                servosChangePosition[i] = true;
+            }
+        }
+
+        public void ChangeServoPosition(ServoType servo, int change)
+        {
+            if ((this.servosPosition[((int)servo) - 1] + change >= 0) && (this.servosPosition[((int)servo) - 1] + change <= 100))
+            {
+                this.servosPosition[((int)servo) - 1] += change;
+                this.servosChangePosition[((int)servo) - 1] = true;
+            }
+        }
+
+
     }
 
     public class CSound
@@ -313,27 +568,33 @@ namespace SSN_II_RobotPokazowy
             ConvertToDriverLevels();
         }
 
+   
         // konwersja to wartości dla sterownika
         // może jako jeden z argumentów typ sterownika i w zależności od tego będzie używane inne przeliczenie
         // jak przesyłać wartości return vs out
         public void ConvertToDriverLevels()
         {
-            // 1 - 127 - pierwsze wyjście
-            // 1 - maksymalna prędkość wstecz, 127 - maksymalna prędkość do przodu, 64 - stop
-            double tempSpeedRight = Math.Round((this.SpeedRightWheel + 100.0) * 127.0 / 201.0);
+            // 0 - 127 - pierwsze wyjście
+            // 0 - maksymalna prędkość wstecz, 127 - maksymalna prędkość do przodu, 64 - stop
+            double tempSpeedRight = Math.Round((this.SpeedRightWheel + 100.0) * 127.0 / 200.0);
 
-            this.speedRightWheelDriverLevel = Convert.ToByte(tempSpeedRight);
+            
 
 
-            // 128 - 255 - drugie wyjście
-            // 128 - maksymalna prędkość wstecz, 255 - maksymalna prędkość do przodu, 192 - stop
-            double tempSpeedLeft = Math.Round((this.SpeedLeftWheel + 100.0) * 127.0 / 200.0) + 128.0;
+            // 0 - 127 - drugie wyjście
+            // 0 - maksymalna prędkość wstecz, 127 - maksymalna prędkość do przodu, 64 - stop
+            double tempSpeedLeft = Math.Round((this.SpeedLeftWheel + 100.0) * 127.0 / 200.0);
 
-            if (tempSpeedLeft == 256)
+            if (tempSpeedLeft > 127 || tempSpeedLeft < 0)
             {
-                tempSpeedLeft--;
+                AminExceptions.CAminExceptions.ThrowException(null, "Prędkość silnika lewego poza zakresem.");
+            }
+            if (tempSpeedRight > 127 || tempSpeedRight < 0)
+            {
+                AminExceptions.CAminExceptions.ThrowException(null, "Prędkość silnika prawego poza zakresem.");
             }
 
+            this.speedRightWheelDriverLevel = Convert.ToByte(tempSpeedRight);
             this.speedLeftWheelDriverLevel = Convert.ToByte(tempSpeedLeft);
         }
 
@@ -459,16 +720,14 @@ namespace SSN_II_RobotPokazowy
             motorSpeedRight = power * maxSpeed * motorSpeedRight;
             motorSpeedLeft = power * maxSpeed * motorSpeedLeft;
 
-            /*
-            if (motorSpeedRight > maxSpeed)
-                motorSpeedRight = maxSpeed;
-            if (motorSpeedLeft > maxSpeed)
-                motorSpeedLeft = maxSpeed;
-            if (motorSpeedRight < minSpeed && motorSpeedRight != 0)
-                motorSpeedRight = minSpeed;
-            if (motorSpeedLeft < minSpeed && motorSpeedLeft != 0)
-                motorSpeedLeft = minSpeed;
-             * */
+            if (motorSpeedRight > 100)
+                motorSpeedRight = 100;
+            if (motorSpeedLeft > 100)
+                motorSpeedLeft = 100;
+            if (motorSpeedRight < -100 && motorSpeedRight != 0)
+                motorSpeedRight = -100;
+            if (motorSpeedLeft < -100 && motorSpeedLeft != 0)
+                motorSpeedLeft = -100;
 
             this.SpeedRightWheel = Convert.ToInt32(motorSpeedRight);
             this.SpeedLeftWheel = Convert.ToInt32(motorSpeedLeft);
@@ -478,5 +737,11 @@ namespace SSN_II_RobotPokazowy
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class CSerialPort
+    {
+        // todo sprawdzic, jakie komendy do stworzenia
+        
     }
 }

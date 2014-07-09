@@ -313,7 +313,7 @@
                             <Label Grid.Column="0" Grid.Row="0" x:Name="lbl_Voltage" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Label Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" x:Name="lbl_VoltageEnum" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             
-                            <Slider Name="powerSlider" Margin="10" Grid.Row="2" Grid.ColumnSpan="3" Maximum="100" Height="47" ValueChanged="powerSlider_ValueChanged" SmallChange="1" />
+                            
                         </Grid>
                     </GroupBox>
 
@@ -379,8 +379,8 @@
                     </Button>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="Tab4" Header="Status" FontFamily="Segoe UI Light">
-                <Grid Background="#FFE5E5E5"  Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
+            <TabItem x:Name="Tab4" Header="Status" FontFamily="Segoe UI Light" Loaded="SequenceTest">
+                <Grid Background="#FFE5E5E5"  Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234" >
                     <Button x:Name="Tab4Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab4Prev_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\rw.png"/>
                     </Button>
@@ -405,6 +405,14 @@
                             <Button Grid.Column="1" Grid.Row="2" x:Name="btn_Sound" Height="20" Width="20" VerticalAlignment="Center" Content="S" Click="SoundButton" HorizontalAlignment="Center" Margin="12.597,10,42,9"/>
                         </Grid>
                     </GroupBox>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="786,229,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="786,275,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="952,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="1000,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="1048,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="786,325,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
+                    <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="786,369,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
+                    <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="269" Margin="979,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
                 </Grid>
             </TabItem>
         </TabControl>
