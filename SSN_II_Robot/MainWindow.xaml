@@ -1,4 +1,4 @@
-﻿<Window x:Class="SSN_II_RobotPokazowy.MainWindow"
+﻿<Window x:Class="SSN_II_Robot.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"

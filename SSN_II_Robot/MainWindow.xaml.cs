@@ -19,7 +19,9 @@ using System.Windows.Shapes;
 // gamepad
 using Microsoft.Xna.Framework.Input;
 
-namespace SSN_II_RobotPokazowy
+using MAF_Robot;
+
+namespace SSN_II_Robot
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -88,7 +90,7 @@ namespace SSN_II_RobotPokazowy
 
         private void GamepadChangeTabPage()
         {
-            if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.RightShoulder))
+            if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.RightShoulder))
             {
                 int currentIndex = tcMain.SelectedIndex;
 
@@ -101,7 +103,7 @@ namespace SSN_II_RobotPokazowy
                     tcMain.SelectedIndex++;
                 }
             }
-            else if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.LeftShoulder))
+            else if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.LeftShoulder))
             {
                 int currentIndex = tcMain.SelectedIndex;
 
@@ -120,7 +122,7 @@ namespace SSN_II_RobotPokazowy
         {
             double result = value;
 
-            if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.DPadUp))
+            if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.DPadUp))
             {
                 if (value >= maxValue)
                 {
@@ -131,7 +133,7 @@ namespace SSN_II_RobotPokazowy
                     result = value + 1;
                 }
             }
-            else if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.DPadDown))
+            else if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.DPadDown))
             {
                 if (value <= 0)
                 {
@@ -148,19 +150,19 @@ namespace SSN_II_RobotPokazowy
 
         private void GamepadPlaySound()
         {
-            if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.A))
+            if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.A))
             {
                 PlaySound("sound/buziak_1.wav");
             }
-            else if(robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.B))
+            else if(robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.B))
             {
                 PlaySound("sound/witaj_1.wav");
             }
-            else if(robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.X))
+            else if(robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.X))
             {
                 PlaySound("sound/taniec_1.wav");
             }
-            else if(robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.Y))
+            else if(robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.Y))
             {
                 PlaySound("sound/nudy_1.wav");
             }
@@ -168,7 +170,7 @@ namespace SSN_II_RobotPokazowy
 
         private void GamepadExit()
         {
-            if (robot.Inputs.GamePad.GamePadState.IsButtonDown(Buttons.Back))
+            if (robot.Inputs.Gamepad.GamePadState.IsButtonDown(Buttons.Back))
             {
                 Close();
             }
@@ -176,7 +178,7 @@ namespace SSN_II_RobotPokazowy
 
         void mainTimer_Tick(object sender, EventArgs e)
         {
-            robot.Inputs.GamePad.Update(Microsoft.Xna.Framework.Input.GamePad.GetState(Microsoft.Xna.Framework.PlayerIndex.One));
+            robot.Inputs.Gamepad.Update(Microsoft.Xna.Framework.Input.GamePad.GetState(Microsoft.Xna.Framework.PlayerIndex.One));
             
             if (timerCounter % 2 == 0)
             {
@@ -189,7 +191,7 @@ namespace SSN_II_RobotPokazowy
             robot.UpdateOutputsBasedOnInputs();
 
             #region STEROWANIE NAPĘDAMI
-            robot.Outputs.Motors.ConvertFromOneStickInput(robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.X, robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y);
+            robot.Outputs.Motors.ConvertFromOneStickInput(robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.X, robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.Y);
             robot.Outputs.Motors.ConvertToDriverLevels();
             robot.SendMotorsPower();
 
@@ -199,7 +201,7 @@ namespace SSN_II_RobotPokazowy
             //SendData(robot.Outputs.Motors.speedRightWheelDriverLevel, robot.Outputs.Motors.speedLeftWheelDriverLevel);
 
             PresentButtons(robot.Inputs.Buttons.ButtonsState);
-            PresentPower(robot.Inputs.Power);
+            //PresentPower(robot.Inputs.Power);
             PresentMotorSpeed(robot.Outputs.Motors.SpeedRightWheel, robot.Outputs.Motors.SpeedLeftWheel);
 
             robot.SendMotorsPower();
@@ -213,43 +215,43 @@ namespace SSN_II_RobotPokazowy
                 timerCounter++;
             }
             #region STEROWANIE RAMIENIEM PRAWYM
-            if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.X >= 0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
+            if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.X >= 0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, 5);
                 //robot.SendServo(CServo.ServoType.Right1);
             }
-            else if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.X <= -0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
+            else if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.X <= -0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, -5);
                 //robot.SendServo(CServo.ServoType.Right1);
             }
-            if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y >= 0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
+            if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.Y >= 0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, 5);
                 //robot.SendServo(CServo.ServoType.Right2);
             }
-            else if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y <= -0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
+            else if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.Y <= -0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Right < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.RightShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, -5);
                 //robot.SendServo(CServo.ServoType.Right2);
             }
             // -------------------
-            if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.X >= 0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Right >= 0.5))
+            if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.X >= 0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Right >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, 5);
                 //robot.SendServo(CServo.ServoType.Right3);
             }
-            else if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.X <= -0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Right >= 0.5))
+            else if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.X <= -0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Right >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, -5);
                 //robot.SendServo(CServo.ServoType.Right3);
             }
-            if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y >= 0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Right >= 0.5))
+            if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.Y >= 0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Right >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, 5);
                 //robot.SendServo(CServo.ServoType.Right4);
             }
-            else if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Right.Y <= -0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Right >= 0.5))
+            else if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Right.Y <= -0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Right >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, -5);
                 //robot.SendServo(CServo.ServoType.Right4);
@@ -257,43 +259,43 @@ namespace SSN_II_RobotPokazowy
             #endregion
 
             #region STEROWANIE RAMIENIEM LEWYM
-            if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.X >= 0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.X >= 0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, 5);
                 //robot.SendServo(CServo.ServoType.Left1);
             }
-            else if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.X <= -0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            else if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.X <= -0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, -5);
                 //robot.SendServo(CServo.ServoType.Left1);
             }
-            if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.Y >= 0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.Y >= 0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, 5);
                 //robot.SendServo(CServo.ServoType.Left2);
             }
-            else if (robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.Y <= -0.5 && (robot.Inputs.GamePad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.GamePad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            else if (robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.Y <= -0.5 && (robot.Inputs.Gamepad.GamePadState.Triggers.Left < 0.5) && (robot.Inputs.Gamepad.GamePadState.Buttons.LeftShoulder == ButtonState.Pressed))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, -5);
                 //robot.SendServo(CServo.ServoType.Left2);
             }
             // -------------------
-            if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.X >= 0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Left >= 0.5))
+            if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.X >= 0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Left >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, 5);
                 //robot.SendServo(CServo.ServoType.Left3);
             }
-            else if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.X <= -0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Left >= 0.5))
+            else if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.X <= -0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Left >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, -5);
                 //robot.SendServo(CServo.ServoType.Left3);
             }
-            if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.Y >= 0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Left >= 0.5))
+            if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.Y >= 0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Left >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, 5);
                 //robot.SendServo(CServo.ServoType.Left4);
             }
-            else if ((robot.Inputs.GamePad.GamePadState.ThumbSticks.Left.Y <= -0.5) && (robot.Inputs.GamePad.GamePadState.Triggers.Left >= 0.5))
+            else if ((robot.Inputs.Gamepad.GamePadState.ThumbSticks.Left.Y <= -0.5) && (robot.Inputs.Gamepad.GamePadState.Triggers.Left >= 0.5))
             {
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, -5);
                 //robot.SendServo(CServo.ServoType.Left4);
@@ -328,7 +330,7 @@ namespace SSN_II_RobotPokazowy
 
             byte buttonsFromSerialPort = 0x03;
 
-            robot.Inputs.GamePad.Update(Microsoft.Xna.Framework.Input.GamePad.GetState(Microsoft.Xna.Framework.PlayerIndex.One));
+            robot.Inputs.Gamepad.Update(Microsoft.Xna.Framework.Input.GamePad.GetState(Microsoft.Xna.Framework.PlayerIndex.One));
             robot.Inputs.Buttons.Update(buttonsFromSerialPort);
 
             robot.Outputs.Write();
@@ -1155,8 +1157,12 @@ namespace SSN_II_RobotPokazowy
             PresentSound(filename, dlugosc);
         }
 
-        private void PresentPower(CPower power)
+        private void PresentPower()
+        //private void PresentPower(CPower power)
         {
+            // TODO - move this logic to CPower class and return appropriate length and status
+
+            /*
             double width = power.Voltage / robot.Inputs.Power.VoltageMaxValuePresentation * 400;
 
             rect_Voltage.Width = width;
@@ -1176,6 +1182,7 @@ namespace SSN_II_RobotPokazowy
 
             lbl_Voltage.Content = power.Voltage.ToString("00.00");
             lbl_VoltageEnum.Content = power.Status;
+             * */
         }
 
         #endregion

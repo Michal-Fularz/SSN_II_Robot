@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SSN_II_RobotPokazowy
+namespace SSN_II_Robot
 {
     /// <summary>
     /// Interaction logic for App.xaml

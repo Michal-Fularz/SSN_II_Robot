@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// gamepad
-using Microsoft.Xna.Framework.Input;
-
 // RS232
 using CommandMessenger;
 using CommandMessenger.TransportLayer;
 
-namespace SSN_II_RobotPokazowy
+using MAF_Robot;
+
+namespace SSN_II_Robot
 {
     class CRobot
     {
@@ -238,139 +237,6 @@ namespace SSN_II_RobotPokazowy
         }
 
         #endregion
-    }
-
-   
-
-    public class CInputs
-    {
-        public CButtons Buttons { get; set; }
-        public CGamePad GamePad { get; set; }
-        public CPower Power { get; set; }
-
-        public CInputs()
-        {
-            Buttons = new CButtons();
-            GamePad = new CGamePad();
-            Power = new CPower();
-        }
-
-        public CInputs(int numberOfButtons)
-        {
-            Buttons = new CButtons(numberOfButtons);
-            GamePad = new CGamePad();
-            Power = new CPower();
-        }
-
-        public void Read()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class CPower
-    {
-        public enum PowerStatus : int
-        {
-            Critical = 0,
-            Warning = 1,
-            Normal = 2
-        };
-
-        private const double VoltageMaxValue = 15.0;
-        private const double VoltageCriticalValue = 10.0;
-        private const double VoltageWarningValue = 11.0;
-
-        public double VoltageMaxValuePresentation { get; private set; }
-        public double Voltage { get; private set; }
-        public CPower.PowerStatus Status { get; private set; }
-
-        public CPower()
-        {
-            this.VoltageMaxValuePresentation = VoltageMaxValue;
-            this.Voltage = 0.0;
-            this.Status = CPower.PowerStatus.Critical;
-        }
-
-        public void Update(double voltage)
-        {
-            Voltage = voltage;
-            Anaylze();
-        }
-
-        private void Anaylze()
-        {
-            if (Voltage <= VoltageCriticalValue)
-            {
-                Status = PowerStatus.Critical;
-            }
-            else if (Voltage <= VoltageWarningValue)
-            {
-                Status = PowerStatus.Warning;
-            }
-            else
-            {
-                Status = PowerStatus.Normal;
-            }
-        }
-    }
-
-    public class CButtons
-    {
-        public bool[] ButtonsState { get; set; }
-
-        public CButtons()
-        {
-            ButtonsState = new bool[0];
-        }
-
-        public CButtons(int numberOfButtons)
-        {
-            ButtonsState = new bool[numberOfButtons];
-        }
-
-        public int GetNumberOfButtons()
-        {
-            return ButtonsState.Length;
-        }
-
-        public void Update(byte buttonsState)
-        {
-            for (int i = 0; i < ButtonsState.Length; ++i)
-            {
-                if ((buttonsState & (1 << i)) != 0)
-                {
-                    ButtonsState[i] = true;
-                }
-                else
-                {
-                    ButtonsState[i] = false;
-                }
-            }
-        }
-
-        public void Update(bool[] buttons)
-        {
-            for (int i = 0; i < ButtonsState.Length; ++i)
-            {
-                this.ButtonsState[i] = buttons[i];
-            }
-        }
-    }
-
-    public class CGamePad
-    {
-        public Microsoft.Xna.Framework.Input.GamePadState GamePadState { get; set; }
-
-        public CGamePad()
-        {
-            GamePadState = new GamePadState();
-        }
-
-        public void Update(Microsoft.Xna.Framework.Input.GamePadState gamePadState)
-        {
-            GamePadState = gamePadState;
-        }
     }
 
     public class COutputs
