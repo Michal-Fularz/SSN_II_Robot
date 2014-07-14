@@ -8,7 +8,7 @@ namespace MAF_Robot
 {
     public class CPower
     {
-        public enum PowerStatus : int
+        private enum PowerStatus : int
         {
             Critical = 0,
             Warning = 1,
@@ -19,37 +19,50 @@ namespace MAF_Robot
         private const double VoltageCriticalValue = 10.0;
         private const double VoltageWarningValue = 11.0;
 
-        public double VoltageMaxValuePresentation { get; private set; }
-        public double Voltage { get; private set; }
-        public CPower.PowerStatus Status { get; private set; }
+        //public double VoltageMaxValuePresentation { get; private set; }
+        private double Voltage = 0.0;
 
         public CPower()
         {
-            this.VoltageMaxValuePresentation = VoltageMaxValue;
+            //this.VoltageMaxValuePresentation = VoltageMaxValue;
             this.Voltage = 0.0;
-            this.Status = CPower.PowerStatus.Critical;
         }
 
         public void Update(double voltage)
         {
-            Voltage = voltage;
-            Anaylze();
+            this.Voltage = voltage;
         }
 
-        private void Anaylze()
+        private PowerStatus Check()
         {
+            PowerStatus status;
+
             if (Voltage <= VoltageCriticalValue)
             {
-                Status = PowerStatus.Critical;
+                status = PowerStatus.Critical;
             }
             else if (Voltage <= VoltageWarningValue)
             {
-                Status = PowerStatus.Warning;
+                status = PowerStatus.Warning;
             }
             else
             {
-                Status = PowerStatus.Normal;
+                status = PowerStatus.Normal;
             }
+
+            return status;
+        }
+
+        public bool IsAtCriticalLevel()
+        {
+            bool isCritical = false;
+
+            if (this.Check() == PowerStatus.Critical)
+            {
+                isCritical = true;
+            }
+
+            return isCritical;
         }
     }
 }

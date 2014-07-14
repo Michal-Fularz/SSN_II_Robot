@@ -53,6 +53,7 @@
     <Reference Include="CommandMessenger">
       <HintPath>..\..\..\Michal\Projekty\VS_2013\_Libraries\CmdMessenger\CommandMessenger.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="NAudio">
       <HintPath>..\..\..\Michal\Projekty\VS_2013\_Libraries\NAudio\NAudio.dll</HintPath>
@@ -146,6 +147,10 @@
       <Project>{ee18295a-173d-4eff-82c8-03edfa361f6d}</Project>
       <Name>AminExceptions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CButtons\CButtons.csproj">
+      <Project>{18f1f3fc-ffe3-4f70-8fe3-4e9085a820aa}</Project>
+      <Name>CButtons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CGamepad\CGamepad.csproj">
       <Project>{944a70e7-8c87-4176-bbec-d846b59922dc}</Project>
       <Name>CGamepad</Name>
@@ -153,6 +158,10 @@
     <ProjectReference Include="..\CInputs\CInputs.csproj">
       <Project>{60847851-e496-4683-a78a-7019a6b8a75f}</Project>
       <Name>CInputs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CPower\CPower.csproj">
+      <Project>{ca9a906f-5bb2-464a-8d5d-e7a59c7d66ad}</Project>
+      <Name>CPower</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

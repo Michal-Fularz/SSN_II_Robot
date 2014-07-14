@@ -45,28 +45,30 @@ namespace SSN_II_Robot
             switch (this.CurrentState)
             {
                 case RobotState.CriticalPower:
+                {
+                    if (this.Inputs.Power.IsAtCriticalLevel())
                     {
-                        if (this.Inputs.Power.Status != CPower.PowerStatus.Critical)
-                        {
-                            this.CurrentState = RobotState.Idle;
-                        }
-                    }break;
+                        this.CurrentState = RobotState.Idle;
+                    }
+                }
+                break;
 
                 case RobotState.Idle:
+                {
+                    if (this.Inputs.Power.IsAtCriticalLevel())
                     {
-                        if (this.Inputs.Power.Status == CPower.PowerStatus.Critical)
-                        {
-                            this.CurrentState = RobotState.CriticalPower;
-                        }
-                        /*      NIE PAMIETAM CO TU CHCIALAM WPISAC ZA WARUNEK :(
-                        else if (this.Inputs.Buttons.ButtonsState == )
-                        {
-                            this.CurrentState = RobotState.SequnceInProgress;
-                        }
-                        */
-                    }break;
+                        this.CurrentState = RobotState.CriticalPower;
+                    }
+                    /*      NIE PAMIETAM CO TU CHCIALAM WPISAC ZA WARUNEK :(
+                    else if (this.Inputs.Buttons.ButtonsState == )
+                    {
+                        this.CurrentState = RobotState.SequnceInProgress;
+                    }
+                    */
+                }
+                break;
             }
-            if (this.Inputs.Power.Status == CPower.PowerStatus.Critical)
+            if (this.Inputs.Power.IsAtCriticalLevel())
             {
                 this.CurrentState = RobotState.CriticalPower;
             }
