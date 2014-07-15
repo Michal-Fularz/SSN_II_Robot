@@ -12,6 +12,8 @@ using MAF_Robot;
 
 namespace SSN_II_Robot
 {
+    // lorafen was here! Hello git!
+
     class CRobot
     {
         private const int numberOfButtons = 6;
