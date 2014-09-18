@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using CommandMessenger;
 using CommandMessenger.TransportLayer;
 
+// gamepad
+using Microsoft.Xna.Framework.Input;
+
 using MAF_Robot;
 
 namespace SSN_II_Robot
@@ -46,11 +49,152 @@ namespace SSN_II_Robot
             this.InitSerialPort(serialPortName);
         }
 
+        private void MakeDecision()
+        {
+            // control motors
+            // TODO - add dependancy from robotState
+            #region STEROWANIE NAPĘDAMI
+
+            if ((this.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) &&
+                (this.Inputs.Gamepad.GamepadState.IsButtonUp(Buttons.RightShoulder)) &&
+                (this.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) &&
+                (this.Inputs.Gamepad.GamepadState.IsButtonUp(Buttons.LeftShoulder))
+            )
+            {
+                this.Outputs.Motors.ConvertFromOneStickInput(this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X, this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y);
+                this.Outputs.Motors.ConvertToDriverLevels();
+            }
+
+            #endregion
+
+            // control servos
+            // TODO - add dependancy from robotState
+            #region STEROWANIE RAMIENIEM PRAWYM
+            if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X >= 0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, 5);
+                //this.SendServo(CServo.ServoType.Right1);
+            }
+            else if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X <= -0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, -5);
+                //this.SendServo(CServo.ServoType.Right1);
+            }
+            if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y >= 0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, 5);
+                //this.SendServo(CServo.ServoType.Right2);
+            }
+            else if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y <= -0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, -5);
+                //this.SendServo(CServo.ServoType.Right2);
+            }
+            // -------------------
+            if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X >= 0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Right >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, 5);
+                //this.SendServo(CServo.ServoType.Right3);
+            }
+            else if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X <= -0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Right >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, -5);
+                //this.SendServo(CServo.ServoType.Right3);
+            }
+            if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y >= 0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Right >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, 5);
+                //this.SendServo(CServo.ServoType.Right4);
+            }
+            else if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y <= -0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Right >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, -5);
+                //this.SendServo(CServo.ServoType.Right4);
+            }
+            #endregion
+
+            #region STEROWANIE RAMIENIEM LEWYM
+            if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.X >= 0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, 5);
+                //this.SendServo(CServo.ServoType.Left1);
+            }
+            else if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.X <= -0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, -5);
+                //this.SendServo(CServo.ServoType.Left1);
+            }
+            if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.Y >= 0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, 5);
+                //this.SendServo(CServo.ServoType.Left2);
+            }
+            else if (this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.Y <= -0.5 && (this.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) && (this.Inputs.Gamepad.GamepadState.Buttons.LeftShoulder == ButtonState.Pressed))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, -5);
+                //this.SendServo(CServo.ServoType.Left2);
+            }
+            // -------------------
+            if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.X >= 0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Left >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, 5);
+                //this.SendServo(CServo.ServoType.Left3);
+            }
+            else if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.X <= -0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Left >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, -5);
+                //this.SendServo(CServo.ServoType.Left3);
+            }
+            if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.Y >= 0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Left >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, 5);
+                //this.SendServo(CServo.ServoType.Left4);
+            }
+            else if ((this.Inputs.Gamepad.GamepadState.ThumbSticks.Left.Y <= -0.5) && (this.Inputs.Gamepad.GamepadState.Triggers.Left >= 0.5))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, -5);
+                //this.SendServo(CServo.ServoType.Left4);
+            }
+            #endregion
+
+            // head servo control
+            if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Buttons.DPadLeft))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Head, -5);
+            }
+            if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Buttons.DPadRight))
+            {
+                this.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Head, 5);
+            }
+
+            // control sound
+
+            // control leds
+
+            // control gamepad vibrations
+        }
+
         public void UpdateOutputsBasedOnInputs()
         {
             // 1. Critical Power - bez możliwości wyjścia z tego stanu (o ile napięcie nie wzrośnie) - wyłączyć serwa, wyłączyć silniki, ustawić wzór światełek (co trzecie z tych dookoła świeci na czerwono)
             // 2. Safety - wyłączyć serwa
 
+            // read serial (and update of power and buttons) is done asynchronous in event from serial port
+            // read gamepad
+            this.Inputs.Gamepad.Update();
+            // read kinect?
+
+            // update inputs - already done
+
+            MakeDecision();
+
+            // send data to robot through serial port
+            // TODO - do it only if the values were changed
+            this.SendMotorsPower();
+
+            this.SendServo();
+
+            // state changes
 
             switch (this.CurrentState)
             {
@@ -127,11 +271,6 @@ namespace SSN_II_Robot
                 }
                 break;
 
-            }
-
-            if (this.Inputs.Power.IsAtCriticalLevel())
-            {
-                this.CurrentState = RobotState.CriticalPower;
             }
         }
 
