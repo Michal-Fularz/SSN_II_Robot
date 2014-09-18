@@ -161,13 +161,29 @@
       <Project>{60847851-e496-4683-a78a-7019a6b8a75f}</Project>
       <Name>CInputs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CKinect\CKinect.csproj">
+      <Project>{867ea1e7-8119-4d2f-8ad4-8bbd8c01f017}</Project>
+      <Name>CKinect</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CMotors\CMotors.csproj">
+      <Project>{708ff791-4acc-4776-b735-78e51cce777f}</Project>
+      <Name>CMotors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CPower\CPower.csproj">
       <Project>{ca9a906f-5bb2-464a-8d5d-e7a59c7d66ad}</Project>
       <Name>CPower</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CServo\CServo.csproj">
+      <Project>{8ea18532-851f-4241-a155-92d4b6d254b0}</Project>
+      <Name>CServo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSettings\CSettings.csproj">
       <Project>{780c5288-074f-48ba-8b80-a3b8d623c2c3}</Project>
       <Name>CSettings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSound\CSound.csproj">
+      <Project>{1b5a103e-6f47-4a2a-8bf8-2efaf4ebb8e8}</Project>
+      <Name>CSound</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
