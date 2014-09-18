@@ -12,7 +12,6 @@ using MAF_Robot;
 
 namespace SSN_II_Robot
 {
-    // lorafen was here! Hello git!
 
     class CRobot
     {
@@ -68,12 +67,7 @@ namespace SSN_II_Robot
                     {
                         this.CurrentState = RobotState.CriticalPower;
                     }
-                    /*      NIE PAMIETAM CO TU CHCIALAM WPISAC ZA WARUNEK :(
-                    else if (this.Inputs.Buttons.ButtonsState == )
-                    {
-                        this.CurrentState = RobotState.SequnceInProgress;
-                    }
-                    */
+                    // todo
                 }
                 break;
             }
