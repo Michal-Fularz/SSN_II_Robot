@@ -45,8 +45,8 @@ namespace SSN_II_Robot
 
         private void Init()
         {
-           robot = new CRobot();
-
+            robot = new CRobot();
+            
             robot.Inputs.Gamepad.OnDpadUp += new ButtonPressed(NextTabPage);
             robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);
             robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
@@ -61,7 +61,7 @@ namespace SSN_II_Robot
             bw.DoWork += bw_DoWork;
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
-            InitKinect();
+            //InitKinect();
 
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52");
 
@@ -109,10 +109,43 @@ namespace SSN_II_Robot
             sound.PlaySound("sound/buziak_1.wav");
         }
 
+        int frequencyOfDisplayInfo = 0;
+        bool prevGamepadState = false;
+        
         void mainTimer_Tick(object sender, EventArgs e)
         {
             robot.Inputs.Gamepad.Update();
-            
+
+            #region GAMEPAD_STATUS_IS_CONNECTED
+            // check GamepadState is connected
+           
+
+            if (frequencyOfDisplayInfo == 10)
+            {
+                bool isGamepadConnected = robot.Inputs.Gamepad.IsConnected();
+
+                if (prevGamepadState != isGamepadConnected)
+                {
+                    if (!isGamepadConnected)
+                    {
+                        rtbMain.AppendText("\rGamepad status: NOT CONNECTED! ");
+                    }
+                    else if (isGamepadConnected)
+                    {
+                        rtbMain.AppendText("\rGamepad status: CONNECTED! ");
+                    }
+                }
+                frequencyOfDisplayInfo = 0;
+                prevGamepadState = isGamepadConnected;
+            }
+            else
+            {
+                frequencyOfDisplayInfo += 1;
+            }
+           
+
+            #endregion
+
             robot.UpdateOutputsBasedOnInputs();
 
             #region STEROWANIE NAPĘDAMI

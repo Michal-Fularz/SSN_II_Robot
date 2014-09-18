@@ -30,6 +30,11 @@ namespace MAF_Robot
             this.GamepadState = new GamePadState();
         }
 
+        public bool IsConnected()
+        {
+            return this.GamepadState.IsConnected;
+        }
+
         public void Update(Microsoft.Xna.Framework.Input.GamePadState gamepadState)
         {
             this.GamepadState = gamepadState;
