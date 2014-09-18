@@ -52,14 +52,13 @@ namespace SSN_II_Robot
             // 2. Safety - wyłączyć serwa
 
 
-            // todo - tu wstawić logikę robota
             switch (this.CurrentState)
             {
                 case RobotState.CriticalPower:
                 {
-                    if (this.Inputs.Power.IsAtCriticalLevel())
+                    if (!this.Inputs.Power.IsAtCriticalLevel())
                     {
-                        this.CurrentState = RobotState.Idle;
+                        this.CurrentState = RobotState.Idle; 
                     }
                 }
                 break;
@@ -70,10 +69,66 @@ namespace SSN_II_Robot
                     {
                         this.CurrentState = RobotState.CriticalPower;
                     }
-                    // todo
+                    else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Y))
+                    {
+                        this.CurrentState = RobotState.SequnceInProgress;
+                    }
+                    else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))
+                    {
+                        this.CurrentState = RobotState.Kinect;
+                    }
                 }
                 break;
+
+                case RobotState.Kinect:
+                {
+                    if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B) &&
+                        this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back))
+                    {
+                        this.CurrentState = RobotState.Idle;
+                    }
+                    else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X) &&
+                        this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back))
+                    {
+                        this.CurrentState = RobotState.Safety;
+                    }
+                    else if (this.Inputs.Power.IsAtCriticalLevel())
+                    {
+                        this.CurrentState = RobotState.CriticalPower;
+                    }
+                }
+                break;
+
+                case RobotState.Safety:
+                {
+                    if ( (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)) &&
+                        (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Start)) )
+                    {
+                        this.CurrentState = RobotState.Idle;
+                    }
+                    else if (this.Inputs.Power.IsAtCriticalLevel())
+                    {
+                        this.CurrentState = RobotState.CriticalPower;
+                    }
+                }
+                break;
+
+                case RobotState.SequnceInProgress:
+                {
+                    if ( (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back)) &&
+                        (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)) )
+                    {
+                        this.CurrentState = RobotState.Safety;
+                    }
+                    else if (this.Inputs.Power.IsAtCriticalLevel())
+                    {
+                        this.CurrentState = RobotState.CriticalPower;
+                    }
+                }
+                break;
+
             }
+
             if (this.Inputs.Power.IsAtCriticalLevel())
             {
                 this.CurrentState = RobotState.CriticalPower;
