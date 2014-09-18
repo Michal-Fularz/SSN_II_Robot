@@ -53,7 +53,7 @@ namespace SSN_II_Robot
 
             robot.Inputs.Gamepad.OnDpadUp += new ButtonPressed(NextTabPage);
             robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);
-            robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
+            //robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
 
             robot.Inputs.Gamepad.OnA += new ButtonPressed(PlaySampleSound);
 

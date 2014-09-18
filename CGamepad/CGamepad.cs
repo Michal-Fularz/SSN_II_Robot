@@ -15,7 +15,7 @@ namespace MAF_Robot
 
         //public ButtonPressed OnRightShoulder = null;
         //public ButtonPressed OnLeftShoulder = null;
-        public ButtonPressed OnBack = null;
+        //public ButtonPressed OnBack = null;
 
         public ButtonPressed OnA = null;
         //public ButtonPressed OnB = null;
@@ -46,7 +46,7 @@ namespace MAF_Robot
 
             if (this.GamepadState.IsButtonDown(Buttons.Back))
             {
-                OnBack();
+                //OnBack();
             }
 
             /*
