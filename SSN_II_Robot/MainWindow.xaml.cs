@@ -255,8 +255,9 @@ namespace SSN_II_Robot
 
             robot.SendServo();
 
+            // Displaying robot state on lbl
+            lblRobotState.Content = robot.CurrentState;
 
-         
             //bw.RunWorkerAsync(bwCounter);
         }
 

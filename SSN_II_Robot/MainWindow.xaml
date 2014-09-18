@@ -253,7 +253,7 @@
                             <Slider Grid.Column="5" Grid.RowSpan="2" x:Name="slider_P" ValueChanged="SliderP_ValueChanged" Minimum="-100" Maximum="100" Orientation="Vertical" IsSnapToTickEnabled="True" VerticalAlignment="Center" Height="310" HorizontalAlignment="Center" Margin="26,10,25,10" SmallChange="1"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="gb_Sensor" Header="Czujniki" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="Auto" Width="Auto" FontSize="36">
+                    <GroupBox x:Name="gb_Sensor" Header="Czujniki" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="Auto" Width="764" FontSize="36">
                         <Grid Width="{Binding ElementName=gb_Sensor, Path=ActualWidth-10}" Height="{Binding ElementName=gb_Sensor, Path=ActualHeight-10}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -295,7 +295,7 @@
 
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="gb_Power" Header="Napięcie" HorizontalAlignment="Left" Height="254" Margin="10,399,0,0" VerticalAlignment="Top" Width="445" FontSize="36">
+                    <GroupBox x:Name="gb_Power" Header="Napięcie" HorizontalAlignment="Left" Height="225" Margin="10,399,0,0" VerticalAlignment="Top" Width="445" FontSize="36">
                         <Grid Width="{Binding ElementName=gb_Power, Path=ActualWidth-10}" Height="{Binding ElementName=gb_Power, Path=ActualHeight-10}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -312,8 +312,8 @@
                             <Rectangle Grid.ColumnSpan="3" Grid.Row="1"  x:Name="rect_Voltage" Width="400" Height="46" Fill="Beige" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,10,0,10"/>
                             <Label Grid.Column="0" Grid.Row="0" x:Name="lbl_Voltage" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Label Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" x:Name="lbl_VoltageEnum" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            
-                            
+
+
                         </Grid>
                     </GroupBox>
 
@@ -330,6 +330,8 @@
                             </Paragraph>
                         </FlowDocument>
                     </RichTextBox>
+                    <GroupBox x:Name="robotState" Header="Stan robota" HorizontalAlignment="Right" Margin="0,509,10,75" Width="764" FontSize="36"/>
+                    <Label x:Name="lblRobotState" Content="Empty" HorizontalAlignment="Left" Height="39" Margin="486,566,0,0" VerticalAlignment="Top" Width="326"/>
 
 
                 </Grid>

@@ -18,9 +18,9 @@ namespace MAF_Robot
         public ButtonPressed OnBack = null;
 
         public ButtonPressed OnA = null;
-        public ButtonPressed OnB = null;
-        public ButtonPressed OnX = null;
-        public ButtonPressed OnY = null;
+        //public ButtonPressed OnB = null;
+        //public ButtonPressed OnX = null;
+        //public ButtonPressed OnY = null;
 
         public ButtonPressed OnDpadUp = null;
         public ButtonPressed OnDpadDown = null;
@@ -66,15 +66,15 @@ namespace MAF_Robot
             }
             else if (this.GamepadState.IsButtonDown(Buttons.B))
             {
-                OnB();
+                //OnB();
             }
             else if (this.GamepadState.IsButtonDown(Buttons.X))
             {
-                OnX();
+                //OnX();
             }
             else if (this.GamepadState.IsButtonDown(Buttons.Y))
             {
-                OnY();
+                //OnY();
             }
 
             if (this.GamepadState.IsButtonDown(Buttons.DPadUp))
