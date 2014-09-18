@@ -13,14 +13,17 @@ namespace MAF_Robot
     {
         public Microsoft.Xna.Framework.Input.GamePadState GamepadState { get; set; }
 
-        public ButtonPressed OnRightShoulder = null;
-        public ButtonPressed OnLeftShoulder = null;
+        //public ButtonPressed OnRightShoulder = null;
+        //public ButtonPressed OnLeftShoulder = null;
         public ButtonPressed OnBack = null;
 
         public ButtonPressed OnA = null;
         public ButtonPressed OnB = null;
         public ButtonPressed OnX = null;
         public ButtonPressed OnY = null;
+
+        public ButtonPressed OnDpadUp = null;
+        public ButtonPressed OnDpadDown = null;
 
         public CGamepad()
         {
@@ -41,6 +44,7 @@ namespace MAF_Robot
                 OnBack();
             }
 
+            /*
             if (this.GamepadState.IsButtonDown(Buttons.RightShoulder))
             {
                 OnRightShoulder();
@@ -49,6 +53,7 @@ namespace MAF_Robot
             {
                 OnLeftShoulder();
             }
+             * */
 
             if(this.GamepadState.IsButtonDown(Buttons.A))
             {
@@ -65,6 +70,15 @@ namespace MAF_Robot
             else if (this.GamepadState.IsButtonDown(Buttons.Y))
             {
                 OnY();
+            }
+
+            if (this.GamepadState.IsButtonDown(Buttons.DPadUp))
+            {
+                OnDpadUp();
+            }
+            else if(this.GamepadState.IsButtonDown(Buttons.DPadDown))
+            {
+                OnDpadDown();
             }
         }
     }

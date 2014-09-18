@@ -8,7 +8,7 @@ namespace MAF_Robot
 {
     public class CPower
     {
-        private enum PowerStatus : int
+        public enum PowerStatus : int
         {
             Critical = 0,
             Warning = 1,
@@ -19,18 +19,61 @@ namespace MAF_Robot
         private const double VoltageCriticalValue = 10.0;
         private const double VoltageWarningValue = 11.0;
 
-        //public double VoltageMaxValuePresentation { get; private set; }
-        private double Voltage = 0.0;
+        public double Voltage { get; private set; }
+        public CPower.PowerStatus Status { get; private set; }
 
         public CPower()
         {
-            //this.VoltageMaxValuePresentation = VoltageMaxValue;
             this.Voltage = 0.0;
         }
 
         public void Update(double voltage)
         {
-            this.Voltage = voltage;
+            Voltage = voltage;
+            Anaylze();
+        }
+
+        private void Anaylze()
+        {
+            if (Voltage <= VoltageCriticalValue)
+            {
+                Status = PowerStatus.Critical;
+            }
+            else if (Voltage <= VoltageWarningValue)
+            {
+                Status = PowerStatus.Warning;
+            }
+            else
+            {
+                Status = PowerStatus.Normal;
+            }
+        }
+
+        public double GetCurrentVoltageToMaxRatio()
+        {
+            double ratio = this.Voltage / VoltageMaxValue;
+
+            return ratio;
+        }
+
+        public System.Windows.Media.Brush GetColorBasedOnStatus()
+        {
+            System.Windows.Media.Brush brush;
+
+            if (this.Status == CPower.PowerStatus.Critical)
+            {
+                brush = System.Windows.Media.Brushes.Red;
+            }
+            else if (this.Status == CPower.PowerStatus.Warning)
+            {
+                brush = System.Windows.Media.Brushes.Orange;
+            }
+            else
+            {
+                brush = System.Windows.Media.Brushes.Green;
+            }
+
+            return brush;
         }
 
         private PowerStatus Check()

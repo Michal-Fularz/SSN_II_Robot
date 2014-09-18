@@ -26,7 +26,7 @@ namespace SSN_II_Robot
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         private CRobot robot;
 
@@ -37,12 +37,18 @@ namespace SSN_II_Robot
             InitializeComponent();
         }
 
+        public void Dispose()
+        {
+            this.robot.Dispose();
+            this.bw.Dispose();
+        }
+
         private void Init()
         {
            robot = new CRobot();
 
-            robot.Inputs.Gamepad.OnRightShoulder += new ButtonPressed(NextTabPage);
-            robot.Inputs.Gamepad.OnRightShoulder += new ButtonPressed(PreviousTabPage);
+            robot.Inputs.Gamepad.OnDpadUp += new ButtonPressed(NextTabPage);
+            robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);
             robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
 
             robot.Inputs.Gamepad.OnA += new ButtonPressed(PlaySampleSound);
@@ -110,20 +116,25 @@ namespace SSN_II_Robot
             robot.UpdateOutputsBasedOnInputs();
 
             #region STEROWANIE NAPĘDAMI
-            robot.Outputs.Motors.ConvertFromOneStickInput(robot.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X, robot.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y);
-            robot.Outputs.Motors.ConvertToDriverLevels();
-            robot.SendMotorsPower();
+
+            if ((robot.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) &&
+                //(robot.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Released) &&
+                (robot.Inputs.Gamepad.GamepadState.IsButtonUp(Buttons.RightShoulder)) && 
+                (robot.Inputs.Gamepad.GamepadState.Triggers.Left < 0.5) &&
+                //(robot.Inputs.Gamepad.GamepadState.Buttons.LeftShoulder == ButtonState.Released)
+                (robot.Inputs.Gamepad.GamepadState.IsButtonUp(Buttons.LeftShoulder))
+            )
+            {
+                robot.Outputs.Motors.ConvertFromOneStickInput(robot.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X, robot.Inputs.Gamepad.GamepadState.ThumbSticks.Right.Y);
+                robot.Outputs.Motors.ConvertToDriverLevels();
+                robot.SendMotorsPower();
+            }
 
             #endregion
 
-            //robot.Outputs.Motors.ConvertToDriverLevels();
-            //SendData(robot.Outputs.Motors.speedRightWheelDriverLevel, robot.Outputs.Motors.speedLeftWheelDriverLevel);
-
             PresentButtons(robot.Inputs.Buttons.ButtonsState);
-            //PresentPower(robot.Inputs.Power);
+            PresentPower(robot.Inputs.Power);
             PresentMotorSpeed(robot.Outputs.Motors.SpeedRightWheel, robot.Outputs.Motors.SpeedLeftWheel);
-
-            robot.SendMotorsPower();
 
             #region STEROWANIE RAMIENIEM PRAWYM
             if (robot.Inputs.Gamepad.GamepadState.ThumbSticks.Right.X >= 0.5 && (robot.Inputs.Gamepad.GamepadState.Triggers.Right < 0.5) && (robot.Inputs.Gamepad.GamepadState.Buttons.RightShoulder == ButtonState.Pressed))
@@ -211,9 +222,35 @@ namespace SSN_II_Robot
                 robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, -5);
                 //robot.SendServo(CServo.ServoType.Left4);
             }
-            // UWAGA SERWA WYŁĄCZONE
-            //robot.SendServo();
             #endregion
+
+            // head servo control
+            if (robot.Inputs.Gamepad.GamepadState.IsButtonDown(Buttons.DPadLeft))
+            {
+                robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Head, -5);
+            }
+            if (robot.Inputs.Gamepad.GamepadState.IsButtonDown(Buttons.DPadRight))
+            {
+                robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Head, 5);
+            }   
+
+            /*
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in robot.Outputs.Servos.servosPosition)
+            {
+                sb.Append(item);
+                sb.Append(", ");
+            }
+            sb.Append("\n");
+             
+
+            rtbMain.AppendText(sb.ToString());
+            rtbMain.ScrollToEnd();
+             * 
+             * */
+
+            robot.SendServo();
+
 
          
             //bw.RunWorkerAsync(bwCounter);
@@ -1068,8 +1105,7 @@ namespace SSN_II_Robot
             PresentSound(filename, dlugosc);
         }
 
-        private void PresentPower()
-        //private void PresentPower(CPower power)
+        private void PresentPower(CPower power)
         {
             // TODO - move this logic to CPower class and return appropriate length and status
 
@@ -1094,6 +1130,11 @@ namespace SSN_II_Robot
             lbl_Voltage.Content = power.Voltage.ToString("00.00");
             lbl_VoltageEnum.Content = power.Status;
              * */
+            rect_Voltage.Width = power.GetCurrentVoltageToMaxRatio() * 400.0;
+            rect_Voltage.Fill = power.GetColorBasedOnStatus();
+
+            lbl_Voltage.Content = power.Voltage.ToString("00.00");
+            lbl_VoltageEnum.Content = power.Status;
         }
 
         #endregion
@@ -1237,7 +1278,8 @@ namespace SSN_II_Robot
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            robot.SendLedsBottom(128, 0, 0);
+            // watch out for 128 value - it's stranger but this makes the leds to stop working
+            robot.SendLedsBottom(196, 0, 0);
             robot.SendLedsChasis(0, 128, 0);
             robot.SendLedsEyes(0, 0, 128);
         }

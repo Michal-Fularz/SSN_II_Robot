@@ -85,9 +85,7 @@ namespace SSN_II_Robot
             ButtonsState = 3,   // two ints (napięcie + stan przycisków), Arduino -> PC
             LedsBottom = 4,     // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
             LedsChasis = 5,     // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
-            LedsEyes = 6,       // three ints (składowa każdego koloru - r, g, b), PC -> Arduino
-
-            
+            LedsEyes = 6,       // three ints (składowa każdego koloru - r, g, b), PC -> Arduino            
         };
 
         private SerialTransport serialTransport;
@@ -97,7 +95,10 @@ namespace SSN_II_Robot
         {
             this.serialTransport = new SerialTransport
             {
-                CurrentSerialSettings = { PortName = "COM13", BaudRate = 115200, DtrEnable = false }
+                //CurrentSerialSettings = { PortName = "COM13", BaudRate = 115200, DtrEnable = false }
+                CurrentSerialSettings = { PortName = "COM66", BaudRate = 115200, DtrEnable = false }
+                // setting for onboard compuetr:
+                //CurrentSerialSettings = { PortName = "COM7", BaudRate = 115200, DtrEnable = false }
             };
 
             this.cmdMessenger = new CmdMessenger(this.serialTransport)
@@ -208,7 +209,6 @@ namespace SSN_II_Robot
             command.AddArgument(r);
             command.AddArgument(g);
             command.AddArgument(b);
-
             this.cmdMessenger.SendCommand(command);
 
         }
@@ -224,6 +224,8 @@ namespace SSN_II_Robot
             // Dispose Serial Port object
             this.serialTransport.Dispose();
 
+            this.Outputs.Sound.Dispose();
+
         }
 
         // ------------------  C A L L B A C K S ---------------------
@@ -233,7 +235,7 @@ namespace SSN_II_Robot
         void OnButtonsStateReceived(ReceivedCommand arguments)
         {
             int powerAsIntFromMarek = arguments.ReadInt32Arg();
-            this.Inputs.Power.Update((double)powerAsIntFromMarek / 10.0);
+            this.Inputs.Power.Update((double)powerAsIntFromMarek * (1.0/10.0));
 
 
             int buttonsState = arguments.ReadInt32Arg();
@@ -259,6 +261,7 @@ namespace SSN_II_Robot
         {
             Motors = new CMotors();
             Servos = new CServo();
+            Sound = new CSound();
         }
 
         public void Write()
@@ -284,9 +287,10 @@ namespace SSN_II_Robot
             Left2 = 6,
             Left3 = 7,
             Left4 = 8,
+            Head = 9,
         };
 
-        private const int numberOfServos = 8;
+        private const int numberOfServos = 9;
         public int[] servosPosition;
         public bool[] servosChangePosition;
 
@@ -299,22 +303,34 @@ namespace SSN_II_Robot
             {
                 servosPosition[i] = 50;
                 servosChangePosition[i] = true;
+                this.SetServoPosition((ServoType)(i + 1), 0);
             }
+            // head is special case - neutral position is 50
+            this.SetServoPosition(ServoType.Head, 50);
         }
 
         public void ChangeServoPosition(ServoType servo, int change)
         {
-            if ((this.servosPosition[((int)servo) - 1] + change >= 0) && (this.servosPosition[((int)servo) - 1] + change <= 100))
+            int newServoPosition = (this.servosPosition[((int)servo) - 1] + change);
+
+            if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
-                this.servosPosition[((int)servo) - 1] += change;
+                this.servosPosition[((int)servo) - 1] = newServoPosition;
                 this.servosChangePosition[((int)servo) - 1] = true;
             }
         }
 
-
+        public void SetServoPosition(ServoType servo, int newServoPosition)
+        {
+            if ((newServoPosition >= 0) && (newServoPosition <= 100))
+            {
+                this.servosPosition[((int)servo) - 1] = newServoPosition;
+                this.servosChangePosition[((int)servo) - 1] = true;
+            }
+        }
     }
 
-    public class CSound
+    public class CSound : IDisposable
     {
         // czy duration tutaj? czy wówczas czas trwania dodać do wszystkich elementów wyjściowych (np ustawia się jak długo silniki mają wysyłać informację...)
         public string SoundName { get; private set; }
@@ -322,12 +338,15 @@ namespace SSN_II_Robot
 
         private bool flagSoundInProgress;
 
+        private CSoundExecutor soundExecutor;
+
         public CSound()
         {
             SoundName = "";
             DurationInMiliseconds = -1;
 
             flagSoundInProgress = false;
+            soundExecutor = new CSoundExecutor();
         }
 
         public bool IsSoundInProgress()
@@ -347,9 +366,14 @@ namespace SSN_II_Robot
 
             flagSoundInProgress = false;
         }
+
+        public void Dispose()
+        {
+            this.soundExecutor.Dispose();
+        }
     }
 
-    public class CSoundExecutor
+    public class CSoundExecutor : IDisposable
     {
         private NAudio.Wave.WaveFileReader wfr;
         private NAudio.Wave.WaveChannel32 wc;
@@ -407,6 +431,18 @@ namespace SSN_II_Robot
             this.StopPlayingSound();
         }
 
+
+        public void Dispose()
+        {
+            if (this.wfr != null)
+            {
+                this.wfr.Dispose();
+            }
+            if (this.audioOutput != null)
+            {
+                this.audioOutput.Dispose();
+            }
+        }
 
     }
 
@@ -533,8 +569,8 @@ namespace SSN_II_Robot
             // skręt w lewo
             else if (angle >= -10 && angle < 10 && power > 0.1)
             {
-                motorSpeedRight = 0.4;
-                motorSpeedLeft = -0.4;
+                motorSpeedRight = 0.8;
+                motorSpeedLeft = -0.8;
             }
             else if (angle >= 10 && angle < 30)
             {
@@ -575,8 +611,8 @@ namespace SSN_II_Robot
             // skręt w prawo
             else if (angle >= 170 || angle < -170)
             {
-                motorSpeedRight = -0.4;
-                motorSpeedLeft = 0.4;
+                motorSpeedRight = -0.8;
+                motorSpeedLeft = 0.8;
             }
             else
             {
@@ -584,8 +620,8 @@ namespace SSN_II_Robot
                 motorSpeedLeft = 0.0;
             }
 
-            double maxSpeed = 80;
-            double minSpeed = -80;
+            double maxSpeed = 35;
+            double minSpeed = -35;
 
             motorSpeedRight = power * maxSpeed * motorSpeedRight;
             motorSpeedLeft = power * maxSpeed * motorSpeedLeft;
