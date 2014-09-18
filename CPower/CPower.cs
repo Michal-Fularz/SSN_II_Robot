@@ -49,6 +49,10 @@ namespace MAF_Robot
             }
         }
 
+        /// <summary>
+        /// Gets the ratio between current volatge and its maximum value.
+        /// </summary>
+        /// <returns>ratio</returns>
         public double GetCurrentVoltageToMaxRatio()
         {
             double ratio = this.Voltage / VoltageMaxValue;

@@ -29,6 +29,7 @@ namespace SSN_II_Robot
     public partial class MainWindow : Window, IDisposable
     {
         private CRobot robot;
+        private CSettings settings;
 
         System.Windows.Threading.DispatcherTimer mainTimer;
 
@@ -45,7 +46,10 @@ namespace SSN_II_Robot
 
         private void Init()
         {
-           robot = new CRobot();
+            settings = new CSettings();
+            settings.LoadFromFile("settings\\settings.txt");
+
+            robot = new CRobot(settings.SerialPortName);
 
             robot.Inputs.Gamepad.OnDpadUp += new ButtonPressed(NextTabPage);
             robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);

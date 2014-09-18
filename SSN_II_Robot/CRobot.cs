@@ -21,16 +21,19 @@ namespace SSN_II_Robot
         public enum RobotState : int
         {
             CriticalPower = 0,
-            SequnceInProgress = 1,
-            SequenceTerminating = 2,
-            Idle = 3,
+            Safety = 1,
+            Idle = 2,
+            SequnceInProgress = 3,
+            SequenceTerminating = 4,
+            Kinect = 5,
+            
         };
 
         public CInputs Inputs { get; set; }
         public COutputs Outputs { get; set; }
         public RobotState CurrentState;
 
-        public CRobot()
+        public CRobot(string serialPortName)
         {
 
             Inputs = new CInputs(numberOfButtons);
@@ -38,11 +41,15 @@ namespace SSN_II_Robot
 
             this.CurrentState = RobotState.Idle;
 
-            this.InitSerialPort();
+            this.InitSerialPort(serialPortName);
         }
 
         public void UpdateOutputsBasedOnInputs()
         {
+            // 1. Critical Power - bez możliwości wyjścia z tego stanu (o ile napięcie nie wzrośnie) - wyłączyć serwa, wyłączyć silniki, ustawić wzór światełek (co trzecie z tych dookoła świeci na czerwono)
+            // 2. Safety - wyłączyć serwa
+
+
             // todo - tu wstawić logikę robota
             switch (this.CurrentState)
             {
@@ -91,14 +98,11 @@ namespace SSN_II_Robot
         private SerialTransport serialTransport;
         private CmdMessenger cmdMessenger;
 
-        public void InitSerialPort()
+        public void InitSerialPort(string serialPortName)
         {
             this.serialTransport = new SerialTransport
             {
-                //CurrentSerialSettings = { PortName = "COM13", BaudRate = 115200, DtrEnable = false }
-                CurrentSerialSettings = { PortName = "COM66", BaudRate = 115200, DtrEnable = false }
-                // setting for onboard compuetr:
-                //CurrentSerialSettings = { PortName = "COM7", BaudRate = 115200, DtrEnable = false }
+                CurrentSerialSettings = { PortName = serialPortName, BaudRate = 115200, DtrEnable = false }
             };
 
             this.cmdMessenger = new CmdMessenger(this.serialTransport)
