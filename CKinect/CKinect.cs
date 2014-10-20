@@ -23,6 +23,11 @@ namespace MAF_Robot
 
         public ImageSource Source { get; private set; }
 
+        public void Start()
+        {
+            this.sensor.Start();
+        }
+
         public void Close()
         {
             if(null != this.sensor)
@@ -128,7 +133,7 @@ namespace MAF_Robot
             using (DrawingContext dc = this.drawingGroup.Open())
             {
                 // Draw a transparent background to set the render size
-                //dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
                 if (skeletons.Length != 0)
                 {

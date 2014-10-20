@@ -67,6 +67,7 @@ namespace SSN_II_Robot
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
             robot.Kinect.Init();
+            this.Image.Source = robot.Kinect.Source;
 
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52");
 
@@ -510,7 +511,13 @@ namespace SSN_II_Robot
 
         private void SequenceTest(object sender, RoutedEventArgs e)
         {
-            tbTest.AppendText("Zaczynamy! \r\n");           
-        }     
+            tbTest.AppendText("Zaczynamy! \r\n");
+        }
+
+        #region KINECT drawing
+
+
+
+        #endregion
     }
 }

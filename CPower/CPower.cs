@@ -24,7 +24,8 @@ namespace MAF_Robot
 
         public CPower()
         {
-            this.Voltage = 0.0;
+            this.Voltage = 13.0;            // it should be 0.0 
+            this.Anaylze();
         }
 
         public void Update(double voltage)

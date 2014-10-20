@@ -183,6 +183,7 @@ namespace SSN_II_Robot
             // read gamepad
             this.Inputs.Gamepad.Update();
             // read kinect?
+            this.Kinect.Start();
 
             // update inputs - already done
 

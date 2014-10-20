@@ -356,7 +356,7 @@
                             </StatusBarItem>
                         </StatusBar>
 
-                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="10 10 10 10" FontSize="48">
+                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="0,10" FontSize="48">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
