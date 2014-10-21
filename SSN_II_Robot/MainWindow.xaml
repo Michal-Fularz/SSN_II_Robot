@@ -346,10 +346,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Center">
-                            <Image Name="Image" Width="640" Height="480"/>
+                        <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Image Name="Image" Width="243" Height="200"/>
                         </Viewbox>
-
+                        <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Image Name="Image2" Width="243" Height="200"/>
+                        </Viewbox>
                         <StatusBar Grid.Row="1" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="Gray">
                             <StatusBarItem Padding="0 0 0 10">
                                 <TextBlock Name="statusBarText" Margin="0 0 0 0">Status bar!</TextBlock>

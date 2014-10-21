@@ -13,14 +13,12 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-
-
-
 // gamepad
 using Microsoft.Xna.Framework.Input;
 
 using MAF_Robot;
 using System.Windows.Media;
+
 
 namespace SSN_II_Robot
 {
@@ -66,9 +64,24 @@ namespace SSN_II_Robot
             bw.DoWork += bw_DoWork;
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
+            // KINECT - image 1
             robot.Kinect.Init();
             this.Image.Source = robot.Kinect.Source;
+            //------------------------------------------------------------------------
+            // KINECT - image 2
+            this.robot.Kinect.drawingGroup = new DrawingGroup();
+            this.robot.Kinect.imageSource = new DrawingImage(this.robot.Kinect.drawingGroup);
+            this.Image2.Source = this.robot.Kinect.imageSource;
+            
+            this.robot.Kinect.InitNewScreen();
+            
+            
+            
 
+
+
+
+            //-------------------------------------------------------------------------
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52");
 
             mainTimer.Start();

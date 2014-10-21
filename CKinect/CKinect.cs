@@ -94,12 +94,12 @@ namespace MAF_Robot
         /// <summary>
         /// Drawing group for skeleton rendering output
         /// </summary>
-        private DrawingGroup drawingGroup;
+        public DrawingGroup drawingGroup;
 
         /// <summary>
         /// Drawing image that we will display
         /// </summary>
-        private DrawingImage imageSource;
+        public DrawingImage imageSource;
 
         // variables for color stream
         /// <summary>
@@ -132,33 +132,33 @@ namespace MAF_Robot
 
             using (DrawingContext dc = this.drawingGroup.Open())
             {
-                // Draw a transparent background to set the render size
-                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+                    // Draw a transparent background to set the render size
+                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
-                if (skeletons.Length != 0)
-                {
-                    foreach (Skeleton skel in skeletons)
+                    if (skeletons.Length != 0)
                     {
-                        RenderClippedEdges(skel, dc);
+                        foreach (Skeleton skel in skeletons)
+                        {
+                            RenderClippedEdges(skel, dc);
 
-                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                        {
-                            this.DrawBonesAndJoints(skel, dc);
-                        }
-                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                        {
-                            dc.DrawEllipse(
-                            this.centerPointBrush,
-                            null,
-                            this.SkeletonPointToScreen(skel.Position),
-                            BodyCenterThickness,
-                            BodyCenterThickness);
+                            if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                            {
+                                this.DrawBonesAndJoints(skel, dc);
+                            }
+                            else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                            {
+                                dc.DrawEllipse(
+                                this.centerPointBrush,
+                                null,
+                                this.SkeletonPointToScreen(skel.Position),
+                                BodyCenterThickness,
+                                BodyCenterThickness);
+                            }
                         }
                     }
-                }
 
-                // prevent drawing outside of our render area
-                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+                    // prevent drawing outside of our render area
+                    this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
         }
 
@@ -371,6 +371,38 @@ namespace MAF_Robot
             }
         }
 
+        public void InitNewScreen()
+        {
+            foreach (var potentialSensor in KinectSensor.KinectSensors)
+            {
+                if (potentialSensor.Status == KinectStatus.Connected)
+                {
+                    this.sensor = potentialSensor;
+                    break;
+                }
+            }
+
+            if (null != this.sensor)
+            {
+                // Turn on the skeleton stream to receive skeleton frames
+                this.sensor.SkeletonStream.Enable();
+
+                // Add an event handler to be called whenever there is new color frame data
+                //this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady2;
+                this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+
+                // Start the sensor!
+                try
+                {
+                    this.sensor.Start();
+                }
+                catch (System.IO.IOException)
+                {
+                    this.sensor = null;
+                }
+            }
+        }
+
         private void InitColorAndSkeletonStream()
         {
             // Turn on the color stream to receive color frames
@@ -464,6 +496,8 @@ namespace MAF_Robot
                 }
             }
         }
+
+  
 
         private readonly System.Drawing.Pen trackedBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Green, 6);
         private readonly System.Drawing.Pen inferredBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Gray, 1);
@@ -591,7 +625,6 @@ namespace MAF_Robot
             // Display the drawing using our image control
             Source = this.imageSource;
 
-
             // Add an event handler to be called whenever there is new color frame data
             this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
         }
@@ -706,8 +739,65 @@ namespace MAF_Robot
             return degrees;
         }
 
+        /// <summary>
+        /// Event handler for Kinect sensor's SkeletonFrameReady event
+        /// </summary>
+        /// <param name="sender">object sending the event</param>
+        /// <param name="e">event arguments</param>
+        private void SensorSkeletonFrameReady2(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            Skeleton[] skeletons = new Skeleton[0];
+
+            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrame != null)
+                {
+                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    skeletonFrame.CopySkeletonDataTo(skeletons);
+                }
+            }
+
+            using (DrawingContext dc1 = this.drawingGroup.Open())
+            {
+                // Draw a transparent background to set the render size
+                dc1.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+
+                if (skeletons.Length != 0)
+                {
+                    foreach (Skeleton skel in skeletons)
+                    {
+                        RenderClippedEdges(skel, dc);
+
+                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+                            this.DrawBonesAndJoints2(skel, dc);
+                        }
+                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                        {
+                            dc1.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
+                        }
+                    }
+                }
+
+                // prevent drawing outside of our render area
+                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+            }
+        }
+
+        private void DrawBonesAndJoints2(Skeleton skel, DrawingContext dc)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 
+
+        public DrawingContext dc { get; set; }
     }
 }
