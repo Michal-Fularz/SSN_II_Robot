@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSN_II_Robot", "SSN_II_Robot\SSN_II_Robot.csproj", "{91C1E124-D82C-471F-9A2C-5BD92436EC7E}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSound", "CSound\CSound.csproj", "{1B5A103E-6F47-4A2A-8BF8-2EFAF4EBB8E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKinect", "CKinect\CKinect.csproj", "{867EA1E7-8119-4D2F-8AD4-8BBD8C01F017}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSequence", "CSequence\CSequence.csproj", "{9B43CC24-244F-4B96-94DB-01E96DD8104C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLeds", "CLeds\CLeds.csproj", "{2679F231-30E7-4935-982A-296C88FABB8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,14 @@ Global
 		{867EA1E7-8119-4D2F-8AD4-8BBD8C01F017}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{867EA1E7-8119-4D2F-8AD4-8BBD8C01F017}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{867EA1E7-8119-4D2F-8AD4-8BBD8C01F017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B43CC24-244F-4B96-94DB-01E96DD8104C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B43CC24-244F-4B96-94DB-01E96DD8104C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B43CC24-244F-4B96-94DB-01E96DD8104C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B43CC24-244F-4B96-94DB-01E96DD8104C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2679F231-30E7-4935-982A-296C88FABB8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2679F231-30E7-4935-982A-296C88FABB8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2679F231-30E7-4935-982A-296C88FABB8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2679F231-30E7-4935-982A-296C88FABB8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

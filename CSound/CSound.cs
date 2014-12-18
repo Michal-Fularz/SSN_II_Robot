@@ -31,6 +31,13 @@ namespace MAF_Robot
             return flagSoundInProgress;
         }
 
+        public int GetDurationInMiliseconds(string filename)
+        {
+            NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(filename);
+
+            return wfr.TotalTime.Milliseconds;
+        }
+
         public void Play(string filename)
         {
             if (this.flagSoundInProgress)
@@ -41,6 +48,7 @@ namespace MAF_Robot
             try
             {
                 this.wfr = new NAudio.Wave.WaveFileReader(filename);
+                this.DurationInMiliseconds = wfr.TotalTime.Milliseconds;
                 this.wc = new NAudio.Wave.WaveChannel32(this.wfr) { PadWithZeroes = false };
 
                 this.audioOutput = new NAudio.Wave.WaveOutEvent();
