@@ -42,6 +42,12 @@
     <Compile Include="CSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CServo\CServo.csproj">
+      <Project>{8ea18532-851f-4241-a155-92d4b6d254b0}</Project>
+      <Name>CServo</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

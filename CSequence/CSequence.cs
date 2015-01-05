@@ -76,12 +76,20 @@ namespace MAF_Robot
 
             for(int i=10; i<50; ++i)
             {
-                this.Add(i, new ActionServoHead(i));
-            }
+                this.Add(i, new ActionServo(CServo.ServoType.Head, i));
+            }  
+        }
 
-            
+        public void CreateYMCASequence()
+        {
+            this.ActionStandardQueue.Clear();
 
-            
+            this.duration = 100;
+            this.currentTime = 0;
+
+            this.Add(0, new ActionSound("sound/YMCA.wav"));
+            this.Add(5, new ActionServo(CServo.ServoType.Left1, 40));
+
         }
     }
 
@@ -89,7 +97,7 @@ namespace MAF_Robot
     {
         public enum ActionType
         {
-            ServoHead = 0, ServoArmRightShoulder = 1, ServoArmRightElbow = 2, ServoArmLeftShoulder = 3, ServoArmLeftElbow = 4,
+            Servo = 0,
             Sound = 5, Light = 6, Movement = 7, CameraMovement = 8
         };
 
@@ -109,15 +117,22 @@ namespace MAF_Robot
         public int SpeedLeftMotor;
     }
 
-    public class ActionServoHead : ActionBase
+    public class ActionServo : ActionBase
     {
-        public ActionServoHead(int position)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="position">allowed range: 0 - 100</param>
+        public ActionServo(CServo.ServoType type, int position)
         {
+            this.Type = type;
             this.Position = position;
-            this.actionType = ActionType.ServoHead;
+            this.actionType = ActionType.Servo;
         }
 
         public int Position;
+        public CServo.ServoType Type;
     }
 
     public class ActionSound : ActionBase

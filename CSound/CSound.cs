@@ -69,7 +69,10 @@ namespace MAF_Robot
         {
             try
             {
-                this.audioOutput.Stop();
+                if (this.audioOutput != null)
+                {
+                    this.audioOutput.Stop();
+                }
                 this.flagSoundInProgress = false;
             }
             catch (Exception e)

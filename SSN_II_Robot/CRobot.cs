@@ -43,7 +43,6 @@ namespace SSN_II_Robot
         public CRobot(string serialPortName)
         {
             Sequence = new CSequence();
-            Sequence.CreateSampleSequence();
             Inputs = new CInputs(numberOfButtons);
             Outputs = new COutputs();
             Kinect = new CKinect();
@@ -223,10 +222,10 @@ namespace SSN_II_Robot
                         this.Outputs.Motors.SetSpeedDirectly(a.SpeedRightMotor, a.SpeedLeftMotor);
                     }
                     break;
-                case ActionBase.ActionType.ServoHead:
+                case ActionBase.ActionType.Servo:
                     {
-                        ActionServoHead a = (ActionServoHead)action;
-                        this.Outputs.Servos.SetServoPosition(CServo.ServoType.Head, a.Position);
+                        ActionServo a = (ActionServo)action;
+                        this.Outputs.Servos.SetServoPosition(a.Type, a.Position);
                     }
                     break;
                 case ActionBase.ActionType.Sound:
@@ -290,6 +289,11 @@ namespace SSN_II_Robot
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Y))
                             {
                                 this.Sequence.CreateSampleSequence();
+                                this.CurrentState = RobotState.SequnceInProgress;
+                            }
+                            else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.A))
+                            {
+                                this.Sequence.CreateYMCASequence();
                                 this.CurrentState = RobotState.SequnceInProgress;
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))
