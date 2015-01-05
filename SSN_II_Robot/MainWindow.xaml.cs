@@ -39,8 +39,7 @@ namespace SSN_II_Robot
 
         public void Dispose()
         {
-            this.robot.Dispose();
-            this.bw.Dispose();
+            Deinit();
         }
 
         private void Init()
@@ -72,16 +71,18 @@ namespace SSN_II_Robot
             //this.Image2.Source = robot.Kinect.Source;
             
 
-            rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52");
+            rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
+            rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
 
             mainTimer.Start();
 
             //meMain.LoadedBehavior = MediaState.Manual;
         }
 
-        private void DeInit()
+        private void Deinit()
         {
             robot.Dispose();
+            this.bw.Dispose();
         }
 
         private void NextTabPage()
@@ -114,7 +115,7 @@ namespace SSN_II_Robot
 
         private void Exit()
         {
-            DeInit();
+            Deinit();
             Close();
         }
 
@@ -125,7 +126,12 @@ namespace SSN_II_Robot
 
         void mainTimer_Tick(object sender, EventArgs e)
         {
+            CRobot.RobotState previousState = robot.CurrentState;
             robot.UpdateOutputsBasedOnInputs();
+            if(previousState != robot.CurrentState)
+            {
+                rtbMain.AppendText("New robot state: " + robot.CurrentState.ToString() + Environment.NewLine);
+            }
 
             PresentButtons(robot.Inputs.Buttons.ButtonsState);
             PresentPower(robot.Inputs.Power);
@@ -389,7 +395,7 @@ namespace SSN_II_Robot
         // TODO - zrobić coś z tym kodem!
         private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            DeInit();
+            Deinit();
         }
 
 
@@ -516,11 +522,5 @@ namespace SSN_II_Robot
         {
             tbTest.AppendText("Zaczynamy! \r\n");
         }
-
-        #region KINECT drawing
-
-
-
-        #endregion
     }
 }

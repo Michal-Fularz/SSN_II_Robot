@@ -8,8 +8,46 @@ namespace MAF_Robot
 {
     public class CMotors
     {
-        public int SpeedRightWheel { get; private set; }
-        public int SpeedLeftWheel { get; private set; }
+        private const int MaxSpeedRightWheel = 100;
+        private const int MaxSpeedLeftWheel = 100;
+
+        private int speedRightWheel;
+        public int SpeedRightWheel {
+            get
+            {
+                return this.speedRightWheel;
+            }
+            private set
+            {
+                if( (value > MaxSpeedRightWheel) || (value < -MaxSpeedRightWheel) )
+                {
+                    throw new ArgumentOutOfRangeException("SpeedRightWheel");
+                }
+                else
+                {
+                    this.speedRightWheel = value;
+                }
+            }
+        }
+
+        private int speedLeftWheel;
+        public int SpeedLeftWheel {
+            get
+            {
+                return this.speedLeftWheel;
+            }
+            private set
+            {
+                if ((value > MaxSpeedLeftWheel) || (value < -MaxSpeedLeftWheel))
+                {
+                    throw new ArgumentOutOfRangeException("SpeedLeftWheel");
+                }
+                else
+                {
+                    this.speedLeftWheel = value;
+                }
+            }
+        }
 
         public byte SpeedRightWheelDriverLevel { get; private set; }
         public byte SpeedLeftWheelDriverLevel { get; private set; }
@@ -22,18 +60,18 @@ namespace MAF_Robot
             ConvertToDriverLevels();
         }
 
-        // konwersja to wartości dla sterownika
+        // konwersja do wartości dla sterownika
         // może jako jeden z argumentów typ sterownika i w zależności od tego będzie używane inne przeliczenie
         // jak przesyłać wartości return vs out
         public void ConvertToDriverLevels()
         {
             // 0 - 127 - pierwsze wyjście
             // 0 - maksymalna prędkość wstecz, 127 - maksymalna prędkość do przodu, 64 - stop
-            double tempSpeedRight = Math.Round((this.SpeedRightWheel + 100.0) * 127.0 / 200.0);
+            double tempSpeedRight = Math.Round((this.SpeedRightWheel + MaxSpeedRightWheel) * 127.0 / 200.0);
 
             // 0 - 127 - drugie wyjście
             // 0 - maksymalna prędkość wstecz, 127 - maksymalna prędkość do przodu, 64 - stop
-            double tempSpeedLeft = Math.Round((this.SpeedLeftWheel + 100.0) * 127.0 / 200.0);
+            double tempSpeedLeft = Math.Round((this.SpeedLeftWheel + MaxSpeedLeftWheel) * 127.0 / 200.0);
 
             if (tempSpeedLeft > 127 || tempSpeedLeft < 0)
             {
@@ -170,13 +208,13 @@ namespace MAF_Robot
             motorSpeedRight = power * maxSpeed * motorSpeedRight;
             motorSpeedLeft = power * maxSpeed * motorSpeedLeft;
 
-            if (motorSpeedRight > 100)
-                motorSpeedRight = 100;
-            if (motorSpeedLeft > 100)
-                motorSpeedLeft = 100;
-            if (motorSpeedRight < -100 && motorSpeedRight != 0)
+            if (motorSpeedRight > MaxSpeedRightWheel)
+                motorSpeedRight = MaxSpeedRightWheel;
+            if (motorSpeedLeft > MaxSpeedLeftWheel)
+                motorSpeedLeft = MaxSpeedLeftWheel;
+            if (motorSpeedRight < -MaxSpeedRightWheel && motorSpeedRight != 0)
                 motorSpeedRight = -100;
-            if (motorSpeedLeft < -100 && motorSpeedLeft != 0)
+            if (motorSpeedLeft < -100 && MaxSpeedLeftWheel != 0)
                 motorSpeedLeft = -100;
 
             this.SpeedRightWheel = Convert.ToInt32(motorSpeedRight);
@@ -186,6 +224,12 @@ namespace MAF_Robot
         public void ConvertFromTwoStickInput(float rightStickValue, float leftStcikValue)
         {
             throw new NotImplementedException();
+        }
+
+        public void SetSpeedDirectly(int _speedRightWheel, int _speedLeftWheel)
+        {
+            this.SpeedRightWheel = _speedRightWheel;
+            this.SpeedLeftWheel = _speedLeftWheel;
         }
     }
 }

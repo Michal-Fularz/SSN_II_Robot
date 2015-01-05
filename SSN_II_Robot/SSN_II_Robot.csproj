@@ -165,6 +165,10 @@
       <Project>{867ea1e7-8119-4d2f-8ad4-8bbd8c01f017}</Project>
       <Name>CKinect</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CLeds\CLeds.csproj">
+      <Project>{2679f231-30e7-4935-982a-296c88fabb8e}</Project>
+      <Name>CLeds</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CMotors\CMotors.csproj">
       <Project>{708ff791-4acc-4776-b735-78e51cce777f}</Project>
       <Name>CMotors</Name>
@@ -172,6 +176,10 @@
     <ProjectReference Include="..\CPower\CPower.csproj">
       <Project>{ca9a906f-5bb2-464a-8d5d-e7a59c7d66ad}</Project>
       <Name>CPower</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSequence\CSequence.csproj">
+      <Project>{9b43cc24-244f-4b96-94db-01e96dd8104c}</Project>
+      <Name>CSequence</Name>
     </ProjectReference>
     <ProjectReference Include="..\CServo\CServo.csproj">
       <Project>{8ea18532-851f-4241-a155-92d4b6d254b0}</Project>

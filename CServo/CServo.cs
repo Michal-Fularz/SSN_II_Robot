@@ -22,21 +22,21 @@ namespace MAF_Robot
         };
 
         private const int numberOfServos = 9;
-        public int[] servosPosition;
-        public bool[] servosChangePosition;
+        public int[] servosPosition { get; private set; }
+        public bool[] servosChangedPosition { get; private set; }
 
         public CServo()
         {
             servosPosition = new int[numberOfServos];
-            servosChangePosition = new bool[numberOfServos];
+            servosChangedPosition = new bool[numberOfServos];
 
             for (int i = 0; i < numberOfServos; ++i)
             {
                 servosPosition[i] = 50;
-                servosChangePosition[i] = true;
+                servosChangedPosition[i] = true;
                 this.SetServoPosition((ServoType)(i + 1), 0);
             }
-            // head is special case - neutral position is 50
+            // head is a special case - neutral position is 50
             this.SetServoPosition(ServoType.Head, 50);
         }
 
@@ -47,7 +47,7 @@ namespace MAF_Robot
             if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
                 this.servosPosition[((int)servo) - 1] = newServoPosition;
-                this.servosChangePosition[((int)servo) - 1] = true;
+                this.servosChangedPosition[((int)servo) - 1] = true;
             }
         }
 
@@ -56,7 +56,7 @@ namespace MAF_Robot
             if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
                 this.servosPosition[((int)servo) - 1] = newServoPosition;
-                this.servosChangePosition[((int)servo) - 1] = true;
+                this.servosChangedPosition[((int)servo) - 1] = true;
             }
         }
     }
