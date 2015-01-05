@@ -120,6 +120,11 @@ namespace MAF_Robot
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             Skeleton[] skeletons = new Skeleton[0];
+            
+            SkeletonPoint sp = new SkeletonPoint();
+            sp.X = 0.0f;
+            sp.Y = 0.0f;
+            sp.Z = 0.0f;
 
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
@@ -141,19 +146,28 @@ namespace MAF_Robot
                         {
                             RenderClippedEdges(skel, dc);
 
-                            if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                            {
-                                this.DrawBonesAndJoints(skel, dc);
-                            }
-                            else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                            {
-                                dc.DrawEllipse(
+                            
+                            
+                            dc.DrawEllipse(
                                 this.centerPointBrush,
                                 null,
                                 this.SkeletonPointToScreen(skel.Position),
                                 BodyCenterThickness,
                                 BodyCenterThickness);
-                            }
+
+                            //if (skel.TrackingState == SkeletonTrackingState.Tracked)
+                            //{
+                            //    this.DrawBonesAndJoints(skel, dc);
+                            //}
+                            //else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                            //{
+                            //    dc.DrawEllipse(
+                            //    this.centerPointBrush,
+                            //    null,
+                            //    this.SkeletonPointToScreen(skel.Position),
+                            //    BodyCenterThickness,
+                            //    BodyCenterThickness);
+                            //}
                         }
                     }
 
@@ -373,34 +387,7 @@ namespace MAF_Robot
 
         public void InitNewScreen()
         {
-            foreach (var potentialSensor in KinectSensor.KinectSensors)
-            {
-                if (potentialSensor.Status == KinectStatus.Connected)
-                {
-                    this.sensor = potentialSensor;
-                    break;
-                }
-            }
-
-            if (null != this.sensor)
-            {
-                // Turn on the skeleton stream to receive skeleton frames
-                this.sensor.SkeletonStream.Enable();
-
-                // Add an event handler to be called whenever there is new color frame data
-                //this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady2;
-                this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
-
-                // Start the sensor!
-                try
-                {
-                    this.sensor.Start();
-                }
-                catch (System.IO.IOException)
-                {
-                    this.sensor = null;
-                }
-            }
+            DrawingSkeleton();
         }
 
         private void InitColorAndSkeletonStream()
@@ -475,13 +462,13 @@ namespace MAF_Robot
                                 //tb_beta.Text =  FindAnglesShoulderElbowYZ(skel).ToString("000.0");
 
                                 FindAngles(skel);
-
-
+                               
+                                //this.DrawBonesAndJoints(skel, );
                                 this.DrawBonesAndJoints2(skel, g);
                             }
                             else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
                             {
-                                g.DrawEllipse(new System.Drawing.Pen(centerPointBrush2), (float)this.SkeletonPointToScreen(skel.Position).X, (float)this.SkeletonPointToScreen(skel.Position).Y, (float)BodyCenterThickness, (float)BodyCenterThickness);
+                                g.DrawEllipse(new System.Drawing.Pen(System.Drawing.Brushes.Blue), (float)this.SkeletonPointToScreen(skel.Position).X, (float)this.SkeletonPointToScreen(skel.Position).Y, (float)BodyCenterThickness, (float)BodyCenterThickness);
 
                                 //dc.DrawEllipse(this.centerPointBrush, null, this.SkeletonPointToScreen(skel.Position), BodyCenterThickness, BodyCenterThickness);
                             }
@@ -496,8 +483,6 @@ namespace MAF_Robot
                 }
             }
         }
-
-  
 
         private readonly System.Drawing.Pen trackedBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Green, 6);
         private readonly System.Drawing.Pen inferredBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Gray, 1);
@@ -739,65 +724,17 @@ namespace MAF_Robot
             return degrees;
         }
 
-        /// <summary>
-        /// Event handler for Kinect sensor's SkeletonFrameReady event
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void SensorSkeletonFrameReady2(object sender, SkeletonFrameReadyEventArgs e)
+        private void DrawingSkeleton()
         {
-            Skeleton[] skeletons = new Skeleton[0];
+            System.Drawing.Pen drawPen = new System.Drawing.Pen(System.Drawing.Brushes.Gray, 1);
+            System.Drawing.Image image = System.Drawing.Image.FromFile("E:\\Moje obrazy\\dont_mess_with_her.jpg");
 
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-            {
-                if (skeletonFrame != null)
-                {
-                    skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-                    skeletonFrame.CopySkeletonDataTo(skeletons);
-                }
-            }
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(image);
 
-            using (DrawingContext dc1 = this.drawingGroup.Open())
-            {
-                // Draw a transparent background to set the render size
-                dc1.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
-                if (skeletons.Length != 0)
-                {
-                    foreach (Skeleton skel in skeletons)
-                    {
-                        RenderClippedEdges(skel, dc);
-
-                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                        {
-                            this.DrawBonesAndJoints2(skel, dc);
-                        }
-                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                        {
-                            dc1.DrawEllipse(
-                            this.centerPointBrush,
-                            null,
-                            this.SkeletonPointToScreen(skel.Position),
-                            BodyCenterThickness,
-                            BodyCenterThickness);
-                        }
-                    }
-                }
-
-                // prevent drawing outside of our render area
-                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-            }
+            graphics.DrawLine(drawPen, new System.Drawing.Point(310, 200), new System.Drawing.Point(400, 100));
         }
 
-        private void DrawBonesAndJoints2(Skeleton skel, DrawingContext dc)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
-
-
-
-        public DrawingContext dc { get; set; }
     }
 }

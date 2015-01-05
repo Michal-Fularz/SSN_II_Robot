@@ -350,7 +350,7 @@
                             <Image Name="Image" Width="243" Height="200"/>
                         </Viewbox>
                         <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Image Name="Image2" Width="243" Height="200"/>
+                            <Rectangle Fill="Black" Width="120" Height="102" Margin="5"/>
                         </Viewbox>
                         <StatusBar Grid.Row="1" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="Gray">
                             <StatusBarItem Padding="0 0 0 10">
