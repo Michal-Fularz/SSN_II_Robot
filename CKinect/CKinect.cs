@@ -94,12 +94,12 @@ namespace MAF_Robot
         /// <summary>
         /// Drawing group for skeleton rendering output
         /// </summary>
-        public DrawingGroup drawingGroup;
+        private DrawingGroup drawingGroup;
 
         /// <summary>
         /// Drawing image that we will display
         /// </summary>
-        public DrawingImage imageSource;
+        private DrawingImage imageSource;
 
         // variables for color stream
         /// <summary>
@@ -137,44 +137,35 @@ namespace MAF_Robot
 
             using (DrawingContext dc = this.drawingGroup.Open())
             {
-                    // Draw a transparent background to set the render size
-                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+                // Draw a transparent background to set the render size
+                dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
-                    if (skeletons.Length != 0)
+                if (skeletons.Length != 0)
+                {
+                    foreach (Skeleton skel in skeletons)
                     {
-                        foreach (Skeleton skel in skeletons)
+                        RenderClippedEdges(skel, dc);
+
+                        if (skel.TrackingState == SkeletonTrackingState.Tracked)
                         {
-                            RenderClippedEdges(skel, dc);
-
-                            
-                            
-                            dc.DrawEllipse(
-                                this.centerPointBrush,
-                                null,
-                                this.SkeletonPointToScreen(skel.Position),
-                                BodyCenterThickness,
-                                BodyCenterThickness);
-
-                            //if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                            //{
-                            //    this.DrawBonesAndJoints(skel, dc);
-                            //}
-                            //else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                            //{
-                            //    dc.DrawEllipse(
-                            //    this.centerPointBrush,
-                            //    null,
-                            //    this.SkeletonPointToScreen(skel.Position),
-                            //    BodyCenterThickness,
-                            //    BodyCenterThickness);
-                            //}
+                            this.DrawBonesAndJoints(skel, dc);
                         }
+                        else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
+                        {
+                            dc.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
+                        }                        
                     }
+                }
 
-                    // prevent drawing outside of our render area
-                    this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-            }
+                // prevent drawing outside of our render area
+                this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
         }
+    }
 
         /// <summary>
         /// Draws indicators to show which edges are clipping skeleton data
@@ -366,7 +357,7 @@ namespace MAF_Robot
 
             if (null != this.sensor)
             {
-                InitColorAndSkeletonStream();
+                InitSkeletonStream();
 
                 // Start the sensor!
                 try
@@ -383,203 +374,6 @@ namespace MAF_Robot
             {
                 this.Status = "No Kinect Ready";// Properties.Resources.NoKinectReady;
             }
-        }
-
-        public void InitNewScreen()
-        {
-            DrawingSkeleton();
-        }
-
-        private void InitColorAndSkeletonStream()
-        {
-            // Turn on the color stream to receive color frames
-            this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-
-            // Turn on the skeleton stream to receive skeleton frames
-            this.sensor.SkeletonStream.Enable();
-
-            // Allocate space to put the pixels we'll receive
-            this.colorPixels = new byte[this.sensor.ColorStream.FramePixelDataLength];
-            // This is the bitmap we'll display on-screen
-            this.colorBitmap = new WriteableBitmap(this.sensor.ColorStream.FrameWidth, this.sensor.ColorStream.FrameHeight, 96.0, 96.0, PixelFormats.Bgr32, null);
-            // Set the image we display to point to the bitmap where we'll put the image data
-            this.Source = this.colorBitmap;
-
-            this.sensor.AllFramesReady += this.ColorAndSkeletonFramesReady;
-        }
-
-        private void ColorAndSkeletonFramesReady(object sender, AllFramesReadyEventArgs e)
-        {
-            using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
-            {
-                if (colorFrame != null)
-                {
-                    Skeleton[] skeletons = new Skeleton[0];
-
-                    using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-                    {
-                        if (skeletonFrame != null)
-                        {
-                            skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
-                            skeletonFrame.CopySkeletonDataTo(skeletons);
-                        }
-                    }
-
-                    // Copy the pixel data from the image to a temporary array
-                    colorFrame.CopyPixelDataTo(this.colorPixels);
-
-                    // Write the pixel data into our bitmap
-                    this.colorBitmap.WritePixels(
-                        new Int32Rect(0, 0, this.colorBitmap.PixelWidth, this.colorBitmap.PixelHeight),
-                        this.colorPixels,
-                        this.colorBitmap.PixelWidth * sizeof(int),
-                        0);
-
-                    this.colorBitmap.Lock();
-
-                    var bmp = new System.Drawing.Bitmap(this.colorBitmap.PixelWidth, this.colorBitmap.PixelHeight,
-                                                  this.colorBitmap.BackBufferStride,
-                                                  System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
-                                                  this.colorBitmap.BackBuffer);
-
-                    System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp); // Good old Graphics
-
-                    g.DrawLine(new System.Drawing.Pen(System.Drawing.Color.Red), new System.Drawing.Point(5, 5), new System.Drawing.Point(50, 50)); // etc...
-
-                    if (skeletons.Length != 0)
-                    {
-                        foreach (Skeleton skel in skeletons)
-                        {
-                            //RenderClippedEdges(skel, dc);
-
-                            if (skel.TrackingState == SkeletonTrackingState.Tracked)
-                            {
-                                //Ania_AnalizaRuchuRamion(skel, JointType.ElbowRight, JointType.WristRight, tb_alpha);
-                                //Ania_AnalizaRuchuRamion(skel, JointType.ShoulderLeft, JointType.ElbowLeft, tb_beta);
-                                //Ania_AnalizaRuchuRamion(skel, JointType.ElbowLeft, JointType.WristLeft, tb_gamma);
-
-                                //tb_alpha.Text = FindAnglesShoulderElbowXY(skel).ToString("000.0");
-                                //tb_beta.Text =  FindAnglesShoulderElbowYZ(skel).ToString("000.0");
-
-                                FindAngles(skel);
-                               
-                                //this.DrawBonesAndJoints(skel, );
-                                this.DrawBonesAndJoints2(skel, g);
-                            }
-                            else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
-                            {
-                                g.DrawEllipse(new System.Drawing.Pen(System.Drawing.Brushes.Blue), (float)this.SkeletonPointToScreen(skel.Position).X, (float)this.SkeletonPointToScreen(skel.Position).Y, (float)BodyCenterThickness, (float)BodyCenterThickness);
-
-                                //dc.DrawEllipse(this.centerPointBrush, null, this.SkeletonPointToScreen(skel.Position), BodyCenterThickness, BodyCenterThickness);
-                            }
-                        }
-                    }
-
-                    // ...and finally:
-                    g.Dispose();
-                    bmp.Dispose();
-                    this.colorBitmap.AddDirtyRect(new Int32Rect(0, 0, this.colorBitmap.PixelWidth, this.colorBitmap.PixelHeight));
-                    this.colorBitmap.Unlock();
-                }
-            }
-        }
-
-        private readonly System.Drawing.Pen trackedBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Green, 6);
-        private readonly System.Drawing.Pen inferredBonePen2 = new System.Drawing.Pen(System.Drawing.Brushes.Gray, 1);
-
-        private readonly System.Drawing.Brush trackedJointBrush2 = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(255, 68, 192, 68));
-        private readonly System.Drawing.Brush inferredJointBrush2 = System.Drawing.Brushes.Yellow;
-
-        private readonly System.Drawing.Brush centerPointBrush2 = System.Drawing.Brushes.Blue;
-
-        private void DrawBonesAndJoints2(Skeleton skeleton, System.Drawing.Graphics graphics)
-        {
-            // Render Torso
-            this.DrawBone2(skeleton, graphics, JointType.Head, JointType.ShoulderCenter);
-            this.DrawBone2(skeleton, graphics, JointType.ShoulderCenter, JointType.ShoulderLeft);
-            this.DrawBone2(skeleton, graphics, JointType.ShoulderCenter, JointType.ShoulderRight);
-            this.DrawBone2(skeleton, graphics, JointType.ShoulderCenter, JointType.Spine);
-            this.DrawBone2(skeleton, graphics, JointType.Spine, JointType.HipCenter);
-            this.DrawBone2(skeleton, graphics, JointType.HipCenter, JointType.HipLeft);
-            this.DrawBone2(skeleton, graphics, JointType.HipCenter, JointType.HipRight);
-
-            // Left Arm
-            this.DrawBone2(skeleton, graphics, JointType.ShoulderLeft, JointType.ElbowLeft);
-            this.DrawBone2(skeleton, graphics, JointType.ElbowLeft, JointType.WristLeft);
-            this.DrawBone2(skeleton, graphics, JointType.WristLeft, JointType.HandLeft);
-
-            // Right Arm
-            this.DrawBone2(skeleton, graphics, JointType.ShoulderRight, JointType.ElbowRight);
-            this.DrawBone2(skeleton, graphics, JointType.ElbowRight, JointType.WristRight);
-            this.DrawBone2(skeleton, graphics, JointType.WristRight, JointType.HandRight);
-
-            // Left Leg
-            this.DrawBone2(skeleton, graphics, JointType.HipLeft, JointType.KneeLeft);
-            this.DrawBone2(skeleton, graphics, JointType.KneeLeft, JointType.AnkleLeft);
-            this.DrawBone2(skeleton, graphics, JointType.AnkleLeft, JointType.FootLeft);
-
-            // Right Leg
-            this.DrawBone2(skeleton, graphics, JointType.HipRight, JointType.KneeRight);
-            this.DrawBone2(skeleton, graphics, JointType.KneeRight, JointType.AnkleRight);
-            this.DrawBone2(skeleton, graphics, JointType.AnkleRight, JointType.FootRight);
-
-            // Render Joints
-            foreach (Joint joint in skeleton.Joints)
-            {
-                System.Drawing.Brush drawBrush = null;
-
-                if (joint.TrackingState == JointTrackingState.Tracked)
-                {
-                    drawBrush = this.trackedJointBrush2;
-                }
-                else if (joint.TrackingState == JointTrackingState.Inferred)
-                {
-                    drawBrush = this.inferredJointBrush2;
-                }
-
-                if (drawBrush != null)
-                {
-                    graphics.DrawEllipse(new System.Drawing.Pen(drawBrush), (float)this.SkeletonPointToScreen(joint.Position).X, (float)this.SkeletonPointToScreen(joint.Position).Y, (float)JointThickness, (float)JointThickness);
-                    //drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
-                }
-            }
-        }
-
-        private System.Drawing.Point SkeletonPointToScreen2(SkeletonPoint skelpoint)
-        {
-            // Convert point to depth space.  
-            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
-            DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-            return new System.Drawing.Point(depthPoint.X, depthPoint.Y);
-        }
-
-        private void DrawBone2(Skeleton skeleton, System.Drawing.Graphics graphics, JointType jointType0, JointType jointType1)
-        {
-            Joint joint0 = skeleton.Joints[jointType0];
-            Joint joint1 = skeleton.Joints[jointType1];
-
-            // If we can't find either of these joints, exit
-            if (joint0.TrackingState == JointTrackingState.NotTracked ||
-                joint1.TrackingState == JointTrackingState.NotTracked)
-            {
-                return;
-            }
-
-            // Don't draw if both points are inferred
-            if (joint0.TrackingState == JointTrackingState.Inferred &&
-                joint1.TrackingState == JointTrackingState.Inferred)
-            {
-                return;
-            }
-
-            // We assume all drawn bones are inferred unless BOTH joints are tracked
-            System.Drawing.Pen drawPen = this.inferredBonePen2;
-            if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
-            {
-                drawPen = this.trackedBonePen2;
-            }
-
-            graphics.DrawLine(drawPen, this.SkeletonPointToScreen2(joint0.Position), this.SkeletonPointToScreen2(joint1.Position));
         }
 
         private void InitColorStream()
@@ -612,6 +406,12 @@ namespace MAF_Robot
 
             // Add an event handler to be called whenever there is new color frame data
             this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+        }
+
+        // todo
+        private void InitSkeletonStreamInColor()
+        {
+        
         }
 
         private double FindAngles(Skeleton skeleton)
@@ -723,17 +523,6 @@ namespace MAF_Robot
 
             return degrees;
         }
-
-        private void DrawingSkeleton()
-        {
-            System.Drawing.Pen drawPen = new System.Drawing.Pen(System.Drawing.Brushes.Gray, 1);
-            System.Drawing.Image image = System.Drawing.Image.FromFile("E:\\Moje obrazy\\dont_mess_with_her.jpg");
-
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(image);
-
-            graphics.DrawLine(drawPen, new System.Drawing.Point(310, 200), new System.Drawing.Point(400, 100));
-        }
-
 
         #endregion
     }

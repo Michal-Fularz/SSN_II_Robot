@@ -66,11 +66,7 @@ namespace SSN_II_Robot
             // KINECT - image 1
             robot.Kinect.Init();
             this.Image.Source = robot.Kinect.Source;
-            // KINECT - image 2
-            robot.Kinect.InitNewScreen();
-            //this.Image2.Source = robot.Kinect.Source;
             
-
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
             rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
 
