@@ -391,7 +391,7 @@
                     <Button x:Name="Tab4Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab4Next_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
-                    <GroupBox x:Name="gb_Sound" Header="Dźwięk" HorizontalAlignment="Left" Height="145" Margin="460,274,0,0" VerticalAlignment="Top" Width="220">
+                    <GroupBox x:Name="gb_Sound" Header="Dźwięk" HorizontalAlignment="Left" Height="159" Margin="10,10,0,0" VerticalAlignment="Top" Width="245">
                         <Grid Width="{Binding ActualWidth-10, ElementName=gb_Sound}" Height="{Binding ActualHeight-10, ElementName=gb_Sound}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -406,17 +406,36 @@
 
                             <Label Grid.Column="0" Grid.Row="0" x:Name="lbl_nazwaUtworu" Grid.ColumnSpan="2"/>
                             <Label Grid.Column="2" Grid.Row="0" x:Name="lbl_dlugosc" />
-                            <Button Grid.Column="1" Grid.Row="2" x:Name="btn_Sound" Height="20" Width="20" VerticalAlignment="Center" Content="S" Click="SoundButton" HorizontalAlignment="Center" Margin="12.597,10,42,9"/>
+                            <Button x:Name="btn_Sound" Height="31" Width="43" VerticalAlignment="Center" Content="S" Click="SoundButton" HorizontalAlignment="Center" Margin="10,12,64,0" Grid.ColumnSpan="2"/>
                         </Grid>
                     </GroupBox>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="786,229,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="786,275,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="952,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
-                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="1000,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
-                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="1048,154,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
-                    <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="786,325,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
-                    <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="786,369,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
-                    <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="269" Margin="979,325,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
+                    <GroupBox x:Name="gb_Servo" Header="Servo" HorizontalAlignment="Left" Height="342" Margin="508,10,0,0" VerticalAlignment="Top" Width="245"/>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="176,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="224,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
+                    <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
+                    <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
+                    <Label x:Name="lbl_ServoR1" Content="Right 01" HorizontalAlignment="Left" Height="33" Margin="522,49,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoR2" Content="Right 02" HorizontalAlignment="Left" Height="33" Margin="522,79,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoR3" Content="Right 03" HorizontalAlignment="Left" Height="33" Margin="522,109,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoR4" Content="Right 04" HorizontalAlignment="Left" Height="33" Margin="522,139,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoL1" Content="Left 01" HorizontalAlignment="Left" Height="33" Margin="522,179,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoL2" Content="Left 02" HorizontalAlignment="Left" Height="33" Margin="522,209,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoL3" Content="Left 03" HorizontalAlignment="Left" Height="33" Margin="522,239,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoL4" Content="Left 04" HorizontalAlignment="Left" Height="33" Margin="522,269,0,0" VerticalAlignment="Top" Width="87"/>
+                    <Label x:Name="lbl_ServoH" Content="Head" HorizontalAlignment="Left" Height="33" Margin="522,309,0,0" VerticalAlignment="Top" Width="87"/>
+                    <TextBox x:Name="tb_ServoR1" HorizontalAlignment="Left" Height="31" Margin="614,49,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoR2" HorizontalAlignment="Left" Height="31" Margin="614,79,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoR3" HorizontalAlignment="Left" Height="31" Margin="614,109,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoR4" HorizontalAlignment="Left" Height="31" Margin="614,139,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoL1" HorizontalAlignment="Left" Height="31" Margin="614,179,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoL2" HorizontalAlignment="Left" Height="31" Margin="614,209,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoL3" HorizontalAlignment="Left" Height="31" Margin="614,239,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoL4" HorizontalAlignment="Left" Height="31" Margin="614,269,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                    <TextBox x:Name="tb_ServoH" HorizontalAlignment="Left" Height="31" Margin="614,309,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -10,15 +10,15 @@ namespace MAF_Robot
     {
         public enum ServoType
         {
-            Right1 = 1,
-            Right2 = 2,
-            Right3 = 3,
-            Right4 = 4,
-            Left1 = 5,
-            Left2 = 6,
-            Left3 = 7,
-            Left4 = 8,
-            Head = 9,
+            Right1 = 0,
+            Right2 = 1,
+            Right3 = 2,
+            Right4 = 3,
+            Left1 = 4,
+            Left2 = 5,
+            Left3 = 6,
+            Left4 = 7,
+            Head = 8,
         };
 
         private const int numberOfServos = 9;
@@ -34,7 +34,7 @@ namespace MAF_Robot
             {
                 servosPosition[i] = 50;
                 servosChangedPosition[i] = true;
-                this.SetServoPosition((ServoType)(i + 1), 0);
+                this.SetServoPosition((ServoType)(i), 0);
             }
             // head is a special case - neutral position is 50
             this.SetServoPosition(ServoType.Head, 50);
@@ -42,12 +42,12 @@ namespace MAF_Robot
 
         public void ChangeServoPosition(ServoType servo, int change)
         {
-            int newServoPosition = (this.servosPosition[((int)servo) - 1] + change);
+            int newServoPosition = (this.servosPosition[((int)servo)] + change);
 
             if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
-                this.servosPosition[((int)servo) - 1] = newServoPosition;
-                this.servosChangedPosition[((int)servo) - 1] = true;
+                this.servosPosition[((int)servo)] = newServoPosition;
+                this.servosChangedPosition[((int)servo)] = true;
             }
         }
 
@@ -55,8 +55,8 @@ namespace MAF_Robot
         {
             if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
-                this.servosPosition[((int)servo) - 1] = newServoPosition;
-                this.servosChangedPosition[((int)servo) - 1] = true;
+                this.servosPosition[((int)servo)] = newServoPosition;
+                this.servosChangedPosition[((int)servo)] = true;
             }
         }
     }

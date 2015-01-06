@@ -136,6 +136,8 @@ namespace SSN_II_Robot
             PresentButtons(robot.Inputs.Buttons.ButtonsState);
             PresentPower(robot.Inputs.Power);
             PresentMotorSpeed(robot.Outputs.Motors.SpeedRightWheel, robot.Outputs.Motors.SpeedLeftWheel);
+            
+            PresentServo(robot.Outputs.Servos);
 
             // Displaying robot state on lbl
             lblRobotState.Content = robot.CurrentState;
@@ -339,6 +341,21 @@ namespace SSN_II_Robot
             lbl_VoltageEnum.Content = power.Status;
         }
 
+        private void PresentServo(CServo servo)
+        {
+            tb_ServoH.Text = servo.servosPosition[(int)CServo.ServoType.Head].ToString();
+            
+            tb_ServoL1.Text = servo.servosPosition[(int)CServo.ServoType.Left1].ToString();
+            tb_ServoL2.Text = servo.servosPosition[(int)CServo.ServoType.Left2].ToString();
+            tb_ServoL3.Text = servo.servosPosition[(int)CServo.ServoType.Left3].ToString();
+            tb_ServoL4.Text = servo.servosPosition[(int)CServo.ServoType.Left4].ToString();
+
+            tb_ServoR1.Text = servo.servosPosition[(int)CServo.ServoType.Right1].ToString();
+            tb_ServoR2.Text = servo.servosPosition[(int)CServo.ServoType.Right2].ToString();
+            tb_ServoR3.Text = servo.servosPosition[(int)CServo.ServoType.Right3].ToString();
+            tb_ServoR4.Text = servo.servosPosition[(int)CServo.ServoType.Right4].ToString();
+        }
+
         #endregion
 
         #region PRZYCISKI KIERUNKOWE NA STRONACH
@@ -522,5 +539,7 @@ namespace SSN_II_Robot
         {
             tbTest.AppendText("Zaczynamy! \r\n");
         }
+
+        
     }
 }
