@@ -135,6 +135,9 @@ namespace SSN_II_Robot
             
             PresentServo(robot.Outputs.Servos);
 
+            tb_alpha.Text = robot.Kinect.resultRight.ToString("000.00");
+            tb_beta.Text = robot.Kinect.resultLeft.ToString("000.00");
+
             // Displaying robot state on lbl
             lblRobotState.Content = robot.CurrentState;
 
@@ -350,6 +353,12 @@ namespace SSN_II_Robot
             tb_ServoR2.Text = servo.servosPosition[(int)CServo.ServoType.Right2].ToString();
             tb_ServoR3.Text = servo.servosPosition[(int)CServo.ServoType.Right3].ToString();
             tb_ServoR4.Text = servo.servosPosition[(int)CServo.ServoType.Right4].ToString();
+        }
+
+        private void PresentAngle(CKinect skeleton)
+        {
+            tb_alpha.Text =  skeleton.degrees.X.ToString();
+            tb_beta.Text = skeleton.degrees.Y.ToString();
         }
 
         #endregion

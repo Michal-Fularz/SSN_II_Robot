@@ -11,6 +11,7 @@ using System.Windows;
 
 // Kinect
 using Microsoft.Kinect;
+using Microsoft.Xna.Framework;
 
 namespace MAF_Robot
 {
@@ -18,6 +19,7 @@ namespace MAF_Robot
     {
         public string AngleAlpha { get; private set; }
         public string AngleBeta { get; private set; }
+        public Vector2 degrees { get; private set; }
 
         public string Status { get; private set; }
 
@@ -69,7 +71,7 @@ namespace MAF_Robot
         /// <summary>
         /// Brush used for drawing joints that are currently tracked
         /// </summary>
-        private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
+        private readonly Brush trackedJointBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 68, 192, 68));
 
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
@@ -111,6 +113,12 @@ namespace MAF_Robot
         /// Intermediate storage for the color data received from the camera
         /// </summary>
         private byte[] colorPixels;
+
+        /// <summary>
+        /// Result of calculating angles between shoulder, elbow and wrist
+        /// </summary>
+        public double resultLeft;
+        public double resultRight;
 
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
@@ -158,12 +166,14 @@ namespace MAF_Robot
                             this.SkeletonPointToScreen(skel.Position),
                             BodyCenterThickness,
                             BodyCenterThickness);
-                        }                        
+                        }
+                        
                     }
                 }
 
                 // prevent drawing outside of our render area
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+               
         }
     }
 
@@ -262,19 +272,24 @@ namespace MAF_Robot
                     drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
                 }
             }
+
+            // Calculate the angles
+            this.resultRight = this.FindAngles(skeleton, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight);
+            this.resultLeft = this.FindAngles(skeleton, JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft);
         }
+
 
         /// <summary>
         /// Maps a SkeletonPoint to lie within our render space and converts to Point
         /// </summary>
         /// <param name="skelpoint">point to map</param>
         /// <returns>mapped point</returns>
-        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
+        private System.Windows.Point SkeletonPointToScreen(SkeletonPoint skelpoint)
         {
             // Convert point to depth space.  
             // We are not using depth directly, but we do want the points in our 640x480 output resolution.
             DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-            return new Point(depthPoint.X, depthPoint.Y);
+            return new System.Windows.Point(depthPoint.X, depthPoint.Y);
         }
 
         /// <summary>
@@ -414,32 +429,64 @@ namespace MAF_Robot
         
         }
 
-        private double FindAngles(Skeleton skeleton)
+
+        /// <summary>
+        /// Calculate angles between two joints
+        /// </summary>
+        /// <param name="skeleton">Skeleton</param>
+        /// <param name="jType1">Joint 1</param>
+        /// <param name="jType2">Joint 2</param>
+        /// <returns></returns>
+        private double FindAngles(Skeleton skeleton ,JointType jType1, JointType jType2, JointType jType3 )
         {
-            float x1 = skeleton.Joints[JointType.ShoulderRight].Position.X;
-            float y1 = skeleton.Joints[JointType.ShoulderRight].Position.Y;
-            float z1 = skeleton.Joints[JointType.ShoulderRight].Position.Z;
 
-            float x2 = skeleton.Joints[JointType.ElbowRight].Position.X;
-            float y2 = skeleton.Joints[JointType.ElbowRight].Position.Y;
-            float z2 = skeleton.Joints[JointType.ElbowRight].Position.Z;
+            Joint joint1 = skeleton.Joints[jType1];
+            Joint joint2 = skeleton.Joints[jType2];
+            Joint joint3 = skeleton.Joints[jType3];
 
-            double x = x1 - x2;
-            double y = y1 - y2;
-            double z = z1 - z2;
-            double r = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            Vector3 vectorJoint1ToJoint2 = new Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, 0);
+            Vector3 vectorJoint2ToJoint3 = new Vector3(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y, 0);
+            vectorJoint1ToJoint2.Normalize();
+            vectorJoint2ToJoint3.Normalize();
 
-            double alpha = Math.Atan2(y, x);
-            double beta = Math.Atan2(z, r);
+            Vector3 crossProduct = Vector3.Cross(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
+            double crossProductLength = crossProduct.Z;
+            double dotProduct = Vector3.Dot(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
+            double segmentAngle = Math.Atan2(crossProductLength, dotProduct);
 
-            double alphaDegrees = alpha * (180 / Math.PI);
-            double betaDegrees = beta * (180 / Math.PI);
+            // Convert the result to degrees.
+            double degrees = segmentAngle * (180 / Math.PI);
 
-            this.AngleAlpha = alphaDegrees.ToString("000.0");
-            this.AngleBeta = betaDegrees.ToString("000.0");
+            // Add the angular offset.  Use modulo 360 to convert the value calculated above to a range
+            // from 0 to 360.
+            degrees = (degrees + 0.01) % 360;
 
-            return 0;
+            // Calculate whether the coordinates should be reversed to account for different sides
+            //if (_ReverseCoordinates)
+            //{
+            //    degrees = CalculateReverseCoordinates(degrees);
+            //}
 
+            //// Shoulder Right
+            //Vector3 joint1 = new Vector3(skeleton.Joints[jType1].Position.X, 
+            //    skeleton.Joints[jType1].Position.Y,
+            //    skeleton.Joints[jType1].Position.Z);
+            //// Elbow Right
+            //Vector3 joint2 = new Vector3(skeleton.Joints[jType2].Position.X,
+            //    skeleton.Joints[jType2].Position.Y,
+            //    skeleton.Joints[jType2].Position.Z);
+
+            //Vector3 difference = joint1 - joint2; 
+                
+            //double r = Math.Sqrt(Math.Pow(difference.X, 2) + Math.Pow(difference.Y, 2));
+
+            //Vector2 radians = new Vector2((float)Math.Atan2(difference.Y, difference.X), 
+            //    (float)Math.Atan2(difference.Z, r));
+
+            //Vector3 degrees = new Vector3((float)(radians.X * (180 / Math.PI)), 
+            //    (float)(radians.Y * (180 / Math.PI)), (float)0.0);
+
+            return degrees;
         }
 
         private double FindAnglesShoulderElbowXY(Skeleton skeleton)
