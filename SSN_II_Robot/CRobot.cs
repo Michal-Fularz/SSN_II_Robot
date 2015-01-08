@@ -13,6 +13,9 @@ using Microsoft.Xna.Framework.Input;
 
 using MAF_Robot;
 
+// Visualization of robot
+using System.Windows.Media;
+
 namespace SSN_II_Robot
 {
 

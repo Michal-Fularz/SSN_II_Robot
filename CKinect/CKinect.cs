@@ -9,9 +9,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
+
 // Kinect
 using Microsoft.Kinect;
 using Microsoft.Xna.Framework;
+
+// Saving data
+using System.IO;
 
 namespace MAF_Robot
 {
@@ -121,6 +125,11 @@ namespace MAF_Robot
         public double resultRight;
 
         /// <summary>
+        /// Save data flag
+        /// </summary>
+        public bool SaveDataIsPressed = false;
+
+        /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
         /// </summary>
         /// <param name="sender">object sending the event</param>
@@ -140,6 +149,10 @@ namespace MAF_Robot
                 {
                     skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                     skeletonFrame.CopySkeletonDataTo(skeletons);
+
+                    // Send data to file
+                    SaveData(SaveDataIsPressed, skeletons);
+                    
                 }
             }
 
@@ -429,6 +442,14 @@ namespace MAF_Robot
         
         }
 
+        private void InitRobotDraw()
+        {
+            // Create an image source that we can use in our image control
+            this.imageSource = new DrawingImage(this.drawingGroup);
+            // Display the drawing using our image control
+            Source = this.imageSource;
+
+        }
 
         /// <summary>
         /// Calculate angles between two joints
@@ -571,6 +592,78 @@ namespace MAF_Robot
             return degrees;
         }
 
+        private void DrawingRobot(DrawingContext drawingContext)
+        {
+
+            Skeleton skeleton = new Skeleton();
+
+            //skeleton.ClippedEdges = FrameEdges.None;
+            //skeleton.Joints[JointType.Head].Position.X = 0.0f;
+
+
+            // Render Torso
+            this.DrawBone(skeleton, drawingContext, JointType.Head, JointType.ShoulderCenter);
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderCenter, JointType.ShoulderRight);
+
+            // Left Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+            // Right Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+
+            // Render Joints
+            foreach (Joint joint in skeleton.Joints)
+            {
+                Brush drawBrush = null;
+
+                if (joint.TrackingState == JointTrackingState.Tracked)
+                {
+                    drawBrush = this.trackedJointBrush;
+                }
+                else if (joint.TrackingState == JointTrackingState.Inferred)
+                {
+                    drawBrush = this.inferredJointBrush;
+                }
+
+                if (drawBrush != null)
+                {
+                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
+                }
+            }
+        }
+
+        public void SaveData(bool flag, Skeleton[] skeletons)
+        {
+            // Sending joint position datas to file 
+            if (flag)
+            {
+                using (TextWriter writer = File.CreateText(@"Joint.txt"))
+                {
+                    foreach (Skeleton skeleton in skeletons)
+                    {
+                        if (skeleton.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+                            writer.Write("Tracking ID: " + skeleton.TrackingId + " | Joint X: | Joint Y: | Joint Z: ");
+                            writer.Write(Environment.NewLine);
+
+                            foreach (Joint joint in skeleton.Joints)
+                            {
+                                writer.Write(joint.JointType + ": " + joint.Position.X + ";" + joint.Position.Y + ";" + joint.Position.Z + ";");
+                                writer.Write(Environment.NewLine);
+                            }
+                        }
+                    }
+
+                    flag = false;
+                }
+            }
+        }
         #endregion
     }
 }

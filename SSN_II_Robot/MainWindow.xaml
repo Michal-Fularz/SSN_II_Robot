@@ -332,8 +332,6 @@
                     </RichTextBox>
                     <GroupBox x:Name="robotState" Header="Stan robota" HorizontalAlignment="Right" Margin="0,509,10,75" Width="764" FontSize="36"/>
                     <Label x:Name="lblRobotState" Content="Empty" HorizontalAlignment="Left" Height="39" Margin="486,566,0,0" VerticalAlignment="Top" Width="326"/>
-
-
                 </Grid>
             </TabItem>
 
@@ -350,7 +348,7 @@
                             <Image Name="Image" Width="243" Height="200"/>
                         </Viewbox>
                         <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Rectangle Fill="Black" Width="120" Height="102" Margin="5"/>
+                            <Image Name="RobotImage" Width="243" Height="200"/>
                         </Viewbox>
                         <StatusBar Grid.Row="1" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="Gray">
                             <StatusBarItem Padding="0 0 0 10">
@@ -358,20 +356,28 @@
                             </StatusBarItem>
                         </StatusBar>
 
-                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="0,10" FontSize="48">
+                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="0,5,781,5" FontSize="36" Height="100" FontWeight="Bold">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="393*"/>
+                                    <ColumnDefinition Width="408*"/>
+                                    <ColumnDefinition Width="401*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Name="tb_alpha" Grid.Column="0" Margin=" 5 5 5 5">0</TextBlock>
-                                <TextBlock Name="tb_beta" Grid.Column="1" Margin=" 5 5 5 5">0</TextBlock>
-                                <TextBlock Name="tb_gamma" Grid.Column="2" Margin=" 5 5 5 5">0</TextBlock>
+                                <TextBlock Name="tb_alpha" Grid.Column="0" FontSize="22" VerticalAlignment="Center">0</TextBlock>
+                                <TextBlock Name="tb_beta" Grid.Column="1"  FontSize="22" VerticalAlignment="Center">0</TextBlock>
+                                <TextBlock Name="tb_gamma" Grid.Column="2" FontSize="22" VerticalAlignment="Center">0</TextBlock>
                             </Grid>
-
                         </GroupBox>
-
+                        <GroupBox Grid.Row="2" Header="Save data" FontSize="36" Margin="438,5,432,5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="393*"/>
+                                    <ColumnDefinition Width="408*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="btn_SaveKinect" Grid.Column="0" Content="Save" HorizontalAlignment="Center" Height="49" Margin="5,0,0,0" VerticalAlignment="Center" Width="153" FontSize="18" Click="btn_SaveKinect_Click"/>
+                                <Label x:Name="lbl_SaveDataState" Grid.Column="1" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+                            </Grid>
+                        </GroupBox>
 
                     </Grid>
 
@@ -381,6 +387,7 @@
                     <Button x:Name="Tab3Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab3Next_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
+                    <Label x:Name="lbl_IsCorrect" Content="Label" HorizontalAlignment="Left" Height="36" Margin="682,643,0,20" VerticalAlignment="Center" Width="90" Visibility="Hidden"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="Tab4" Header="Status" FontFamily="Segoe UI Light" Loaded="SequenceTest">
@@ -409,7 +416,31 @@
                             <Button x:Name="btn_Sound" Height="31" Width="43" VerticalAlignment="Center" Content="S" Click="SoundButton" HorizontalAlignment="Center" Margin="10,12,64,0" Grid.ColumnSpan="2"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="gb_Servo" Header="Servo" HorizontalAlignment="Left" Height="342" Margin="508,10,0,0" VerticalAlignment="Top" Width="245"/>
+                    <GroupBox x:Name="gb_Servo" Header="Servo" HorizontalAlignment="Left" Height="382" Margin="508,10,0,0" VerticalAlignment="Top" Width="622">
+                        <Grid Width="{Binding ActualWidth-10, ElementName=gb_Sound}" Height="{Binding ActualHeight-10, ElementName=gb_Sound}">
+                            <Label x:Name="lbl_ServoR1" Content="Right 01" HorizontalAlignment="Left" Height="33" Margin="10,49,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoR2" Content="Right 02" HorizontalAlignment="Left" Height="33" Margin="10,79,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoR3" Content="Right 03" HorizontalAlignment="Left" Height="33" Margin="10,109,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoR4" Content="Right 04" HorizontalAlignment="Left" Height="33" Margin="10,139,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoL1" Content="Left 01" HorizontalAlignment="Left" Height="33" Margin="10,179,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoL2" Content="Left 02" HorizontalAlignment="Left" Height="33" Margin="10,209,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoL3" Content="Left 03" HorizontalAlignment="Left" Height="33" Margin="10,239,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoL4" Content="Left 04" HorizontalAlignment="Left" Height="33" Margin="10,269,0,0" VerticalAlignment="Top" Width="87"/>
+                            <Label x:Name="lbl_ServoH" Content="Head" HorizontalAlignment="Left" Height="33" Margin="10,309,0,0" VerticalAlignment="Top" Width="87"/>
+                            <TextBox x:Name="tb_ServoR1" HorizontalAlignment="Left" Height="31" Margin="100,49,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoR2" HorizontalAlignment="Left" Height="31" Margin="100,79,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoR3" HorizontalAlignment="Left" Height="31" Margin="100,109,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoR4" HorizontalAlignment="Left" Height="31" Margin="100,139,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoL1" HorizontalAlignment="Left" Height="31" Margin="100,179,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoL2" HorizontalAlignment="Left" Height="31" Margin="100,209,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoL3" HorizontalAlignment="Left" Height="31" Margin="100,239,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoL4" HorizontalAlignment="Left" Height="31" Margin="100,269,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <TextBox x:Name="tb_ServoH" HorizontalAlignment="Left" Height="31" Margin="100,309,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+                            <Label Content="Write the sequence name: " HorizontalAlignment="Left" Height="33" Margin="10,11,0,0" VerticalAlignment="Top" Width="213"/>
+                            <TextBox x:Name="tb_ServoName" Margin="228,11,88,302" Tag="name"/>
+                            <Button x:Name="btn_ServoSave" Height="30" Width="294" VerticalAlignment="Center" Content="Save" Click="ServoSave" HorizontalAlignment="Center" Margin="228,57,88,265"/>
+                        </Grid>
+                    </GroupBox>
                     <Button Content="Button" HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
                     <Button Content="Button" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
                     <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
@@ -418,26 +449,11 @@
                     <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
                     <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
                     <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
-                    <Label x:Name="lbl_ServoR1" Content="Right 01" HorizontalAlignment="Left" Height="33" Margin="522,49,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoR2" Content="Right 02" HorizontalAlignment="Left" Height="33" Margin="522,79,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoR3" Content="Right 03" HorizontalAlignment="Left" Height="33" Margin="522,109,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoR4" Content="Right 04" HorizontalAlignment="Left" Height="33" Margin="522,139,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoL1" Content="Left 01" HorizontalAlignment="Left" Height="33" Margin="522,179,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoL2" Content="Left 02" HorizontalAlignment="Left" Height="33" Margin="522,209,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoL3" Content="Left 03" HorizontalAlignment="Left" Height="33" Margin="522,239,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoL4" Content="Left 04" HorizontalAlignment="Left" Height="33" Margin="522,269,0,0" VerticalAlignment="Top" Width="87"/>
-                    <Label x:Name="lbl_ServoH" Content="Head" HorizontalAlignment="Left" Height="33" Margin="522,309,0,0" VerticalAlignment="Top" Width="87"/>
-                    <TextBox x:Name="tb_ServoR1" HorizontalAlignment="Left" Height="31" Margin="614,49,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoR2" HorizontalAlignment="Left" Height="31" Margin="614,79,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoR3" HorizontalAlignment="Left" Height="31" Margin="614,109,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoR4" HorizontalAlignment="Left" Height="31" Margin="614,139,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoL1" HorizontalAlignment="Left" Height="31" Margin="614,179,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoL2" HorizontalAlignment="Left" Height="31" Margin="614,209,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoL3" HorizontalAlignment="Left" Height="31" Margin="614,239,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoL4" HorizontalAlignment="Left" Height="31" Margin="614,269,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
-                    <TextBox x:Name="tb_ServoH" HorizontalAlignment="Left" Height="31" Margin="614,309,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="109"/>
+
+
                 </Grid>
             </TabItem>
         </TabControl>
+
     </Grid>
 </Window>

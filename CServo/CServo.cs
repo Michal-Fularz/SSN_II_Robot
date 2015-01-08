@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// saving data
+using System.IO;
+
 namespace MAF_Robot
 {
     public class CServo
@@ -57,6 +60,22 @@ namespace MAF_Robot
             {
                 this.servosPosition[((int)servo)] = newServoPosition;
                 this.servosChangedPosition[((int)servo)] = true;
+            }
+        }
+
+        public void SaveData(string name)
+        {
+            // Sending joint position datas to file 
+            using (TextWriter writer = File.AppendText(@"Servo.txt"))
+            {
+                writer.WriteLine(name);
+                writer.Write("ServoType:    |     Servo Position: ");
+                writer.Write(Environment.NewLine);
+                for (int i = 0; i < numberOfServos; i++)
+			    {
+                    writer.Write(i + ": " + this.servosPosition[i] + ",");
+                    writer.Write(Environment.NewLine);
+                }
             }
         }
     }

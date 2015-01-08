@@ -67,6 +67,9 @@ namespace SSN_II_Robot
             robot.Kinect.Init();
             this.Image.Source = robot.Kinect.Source;
             
+            // Drawing robot on image 2
+            this.RobotImage.Source = robot.Kinect.Source;
+
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
             rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
 
@@ -544,6 +547,28 @@ namespace SSN_II_Robot
         {
             tbTest.AppendText("Zaczynamy! \r\n");
         }
+
+        /// <summary>
+        /// Action for SaveData button on Spine screen, change flag to true if it's pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_SaveKinect_Click(object sender, RoutedEventArgs e)
+        {
+            robot.Kinect.SaveDataIsPressed = true;
+            if (robot.Kinect.SaveDataIsPressed)
+            {
+                lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
+            }
+        }
+
+        private void ServoSave(object sender, RoutedEventArgs e)
+        {
+            
+            robot.Outputs.Servos.SaveData(tb_ServoName.Text);
+        }
+
+    
 
         
     }
