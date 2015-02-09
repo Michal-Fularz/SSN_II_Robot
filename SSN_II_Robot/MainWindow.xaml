@@ -440,16 +440,18 @@
                             <TextBox x:Name="tb_ServoName" Margin="228,11,88,302" Tag="name"/>
                             <Button x:Name="btn_ServoSave" Height="30" Width="294" VerticalAlignment="Center" Content="Save" Click="ServoSave" HorizontalAlignment="Center" Margin="228,57,88,265"/>
                             <Button x:Name="btn_Reset" Height="50" Width="294" VerticalAlignment="Center" Content="Reset" HorizontalAlignment="Center" Click="ServoReset" Margin="228,292,88,10" RenderTransformOrigin="0.4,0.14"/>
+                            <TextBox x:Name="tb_testowy" Height="31" Margin="280,249,221,0" Text="przyklad" VerticalAlignment="Top" Width="109"/>
                         </Grid>
                     </GroupBox>
                     <Button Content="Button" HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
                     <Button Content="Button" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
-                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="176,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
-                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="224,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43"/>
+                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
+                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="176,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
+                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="224,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
                     <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
                     <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
                     <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
+                    
 
 
                 </Grid>
