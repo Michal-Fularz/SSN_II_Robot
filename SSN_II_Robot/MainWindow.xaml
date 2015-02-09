@@ -439,6 +439,7 @@
                             <Label Content="Write the sequence name: " HorizontalAlignment="Left" Height="33" Margin="10,11,0,0" VerticalAlignment="Top" Width="213"/>
                             <TextBox x:Name="tb_ServoName" Margin="228,11,88,302" Tag="name"/>
                             <Button x:Name="btn_ServoSave" Height="30" Width="294" VerticalAlignment="Center" Content="Save" Click="ServoSave" HorizontalAlignment="Center" Margin="228,57,88,265"/>
+                            <Button x:Name="btn_Reset" Height="50" Width="294" VerticalAlignment="Center" Content="Reset" HorizontalAlignment="Center" Click="ServoReset" Margin="228,292,88,10" RenderTransformOrigin="0.4,0.14"/>
                         </Grid>
                     </GroupBox>
                     <Button Content="Button" HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>

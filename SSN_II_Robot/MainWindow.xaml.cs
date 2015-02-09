@@ -568,6 +568,17 @@ namespace SSN_II_Robot
             robot.Outputs.Servos.SaveData(tb_ServoName.Text);
         }
 
+        private void ServoReset(object sender, RoutedEventArgs e)
+        {
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, 0);
+            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, 0);
+        }
     
 
         
