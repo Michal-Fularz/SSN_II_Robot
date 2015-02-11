@@ -43,6 +43,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CLeds\CLeds.csproj">
+      <Project>{2679f231-30e7-4935-982a-296c88fabb8e}</Project>
+      <Name>CLeds</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CServo\CServo.csproj">
       <Project>{8ea18532-851f-4241-a155-92d4b6d254b0}</Project>
       <Name>CServo</Name>

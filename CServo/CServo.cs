@@ -63,6 +63,17 @@ namespace MAF_Robot
             }
         }
 
+        /// <summary>
+        /// Function to reset all servos position
+        /// </summary>
+        public void ResetServos()
+        {
+            for (int i = 0; i < numberOfServos; ++i)
+            {
+                this.SetServoPosition((ServoType)(i), 0);
+            }
+        }
+
         public void SaveData(string name)
         {
             // Sending joint position datas to file 

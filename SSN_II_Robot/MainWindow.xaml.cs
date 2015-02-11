@@ -53,7 +53,7 @@ namespace SSN_II_Robot
             robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);
             //robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
 
-            robot.Inputs.Gamepad.OnA += new ButtonPressed(PlaySampleSound);
+            //robot.Inputs.Gamepad.OnA += new ButtonPressed();
 
             mainTimer = new System.Windows.Threading.DispatcherTimer();
             mainTimer.Interval = TimeSpan.FromMilliseconds(100);
@@ -118,9 +118,17 @@ namespace SSN_II_Robot
             Close();
         }
 
+        /// <summary>
+        /// Function to play music from wave
+        /// </summary>
+        /// <param name="numberOfSound">int number of sound:
+        /// 0 - YMCA
+        /// 1 - sport
+        /// default - shot
+        /// </param>
         private void PlaySampleSound()
         {
-            this.robot.Outputs.Sound.Play("sound/buziak_1.wav");
+            this.robot.Outputs.Sound.Play("sound/shot.wav");
         }
 
         void mainTimer_Tick(object sender, EventArgs e)
@@ -297,19 +305,16 @@ namespace SSN_II_Robot
             lbl_ML.Content = speedLeft;
         }
 
-        private void PresentSound(string filename, int dlugosc)
-        {
-            lbl_nazwaUtworu.Content = filename;
-            lbl_dlugosc.Content = dlugosc;
-        }
-
+        /// <summary>
+        /// Button to test sound
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SoundButton(object sender, RoutedEventArgs e)
         {
-            string filename = "Kasia Kowalska";
-            int dlugosc = 15000;
-
-            PresentSound(filename, dlugosc);
+            robot.Outputs.Sound.Play("sound/sport.wav");
         }
+
 
         private void PresentPower(CPower power)
         {
@@ -485,16 +490,9 @@ namespace SSN_II_Robot
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left1, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left2, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right3, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right4, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left3, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Left4, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right1, 50);
-            robot.Outputs.Servos.ChangeServoPosition(CServo.ServoType.Right2, 50);
-           
-            robot.SendServo();
+            // ledState           
+            robot.SendLedsBottom(255, 255, 255);
+            
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -570,19 +568,19 @@ namespace SSN_II_Robot
 
         private void ServoReset(object sender, RoutedEventArgs e)
         {
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left1, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left2, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left3, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left4, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right1, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right2, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right3, 0);
-            robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right4, 0);
-            
+            // ------ zakomentowany kod realizowany funkcja ResetServos(), ale jeszcze nie przetestowane -------- //
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left1, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left2, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left3, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left4, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right1, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right2, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right3, 0);
+            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right4, 0);
+
+            this.robot.Outputs.Servos.ResetServos();
             this.PresentServo(robot.Outputs.Servos);
             
-
-
         }
     
 

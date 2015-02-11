@@ -237,6 +237,12 @@ namespace SSN_II_Robot
                         this.Outputs.Sound.Play(a.SoundName);
                     }
                     break;
+                case ActionBase.ActionType.Light:
+                    {
+                        ActionLed a = (ActionLed)action;
+                        this.Outputs.Leds.SetLedColors(a.Type, a.Color);
+                    }
+                    break;
             }
         }
 
@@ -261,6 +267,7 @@ namespace SSN_II_Robot
             this.SendMotorsPower();
 
             this.SendServo();
+            this.SendLeds();
 
             // condition for all states
             if (this.Inputs.Power.IsAtCriticalLevel())
@@ -291,17 +298,19 @@ namespace SSN_II_Robot
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Y))
                             {
-                                this.Sequence.CreateSampleSequence();
+                                this.Sequence.CreateHiSequence();
                                 this.CurrentState = RobotState.SequnceInProgress;
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.A))
                             {
-                                this.Sequence.CreateYMCASequence();
+                                this.Sequence.CreateSportSequence();
                                 this.CurrentState = RobotState.SequnceInProgress;
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))
                             {
-                                this.CurrentState = RobotState.Kinect;
+                                //this.CurrentState = RobotState.Kinect;
+                                this.Sequence.CreateVaderSequence();
+                                this.CurrentState = RobotState.SequnceInProgress;
                             }
                         }
                         break;
@@ -466,6 +475,50 @@ namespace SSN_II_Robot
             }
         }
 
+        public void SendLeds()
+        {
+            for (int i = 0; i < this.Outputs.Leds.ledChangedState.Length; ++i)
+            {
+                if (this.Outputs.Leds.ledChangedState[(int)i] == true)
+                {
+                    CLeds.Color newColor = this.Outputs.Leds.ledState[((int)i)];
+                    this.Outputs.Leds.ledChangedState[(int)i] = false;
+
+                    switch ((int)i)
+                    {
+                        case 4:
+                            SendCommand command1 = new SendCommand((int)Command.LedsBottom);
+                            //command.AddArgument((int)(i + 1));
+                            command1.AddArgument(newColor.R);
+                            command1.AddArgument(newColor.G);
+                            command1.AddArgument(newColor.B);
+                            this.cmdMessenger.SendCommand(command1);
+
+                            break;
+                        case 5:
+                            SendCommand command2 = new SendCommand((int)Command.LedsChasis);
+                            //command.AddArgument((int)(i + 1));
+                            command2.AddArgument(newColor.R);
+                            command2.AddArgument(newColor.G);
+                            command2.AddArgument(newColor.B);
+                            this.cmdMessenger.SendCommand(command2);
+                            break;
+                        case 6:
+                            SendCommand command3 = new SendCommand((int)Command.LedsEyes);
+                            //command.AddArgument((int)(i + 1));
+                            command3.AddArgument(newColor.R);
+                            command3.AddArgument(newColor.G);
+                            command3.AddArgument(newColor.B);
+                            this.cmdMessenger.SendCommand(command3);
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
+        }
+
         public void SendLedsBottom(int r, int g, int b)
         {
             SendCommand command = new SendCommand((int)Command.LedsBottom);
@@ -515,11 +568,13 @@ namespace SSN_II_Robot
     {
         public CMotors Motors { get; set; }
 
-        public CLeds LedsChassis { get; set; }
+        public CLeds Leds { get; set; }
 
-        public CLeds LedsFront { get; set; }
-        public CLeds LedsBottom { get; set; }
-        public CLeds LedsHead { get; set; }
+        //public CLeds LedsChassis { get; set; }
+
+        //public CLeds LedsFront { get; set; }
+        //public CLeds LedsBottom { get; set; }
+        //public CLeds LedsHead { get; set; }
 
         public CServo Servos { get; set; }
 
@@ -530,6 +585,7 @@ namespace SSN_II_Robot
             Motors = new CMotors();
             Servos = new CServo();
             Sound = new CSound();
+            Leds = new CLeds();
         }
 
         public void Write()

@@ -62,7 +62,7 @@ namespace MAF_Robot
 
             if(this.GamepadState.IsButtonDown(Buttons.A))
             {
-                OnA();
+                //OnA();
             }
             else if (this.GamepadState.IsButtonDown(Buttons.B))
             {

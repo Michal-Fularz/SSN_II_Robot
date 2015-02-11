@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MAF_Robot
 {
     public class CSequence
@@ -72,7 +73,7 @@ namespace MAF_Robot
 
             this.Add(0, new ActionMotor(40, 40));
 
-            this.Add(10, new ActionSound("sound/buziak_1.wav"));
+            this.Add(10, new ActionSound("sound/shot.wav"));
 
             for(int i=10; i<50; ++i)
             {
@@ -87,9 +88,77 @@ namespace MAF_Robot
             this.duration = 100;
             this.currentTime = 0;
 
-            this.Add(0, new ActionSound("sound/YMCA.wav"));
-            this.Add(5, new ActionServo(CServo.ServoType.Left1, 40));
+            //this.Add(0, new ActionSound("sound/YMCA.wav"));
+            //this.Add(5, new ActionServo(CServo.ServoType.Left1, 40));
 
+        }
+
+        public void CreateSurferSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            //this.Add(0, new ActionServo(CServo.ServoType.Left1, 40));
+
+        }
+
+        /// <summary>
+        /// Sequence while robot moves forearms like an athlete on gym with some nasty sounds
+        /// </summary>
+        public void CreateSportSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            // sounds of sports needs to be add
+            this.Add(0, new ActionSound("sound/sport.wav"));
+
+            this.Add(10, new ActionServo(CServo.ServoType.Left4, 90));
+            this.Add(20, new ActionServo(CServo.ServoType.Left4, 0));
+            this.Add(30, new ActionServo(CServo.ServoType.Right4, 90));
+            this.Add(40, new ActionServo(CServo.ServoType.Right4, 0));
+            this.Add(50, new ActionServo(CServo.ServoType.Left4, 90));
+            this.Add(60, new ActionServo(CServo.ServoType.Left4, 0));
+            this.Add(70, new ActionServo(CServo.ServoType.Right4, 90));
+            this.Add(80, new ActionServo(CServo.ServoType.Right4, 0));
+
+        }
+
+        public void CreateHiSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            this.Add(0, new ActionServo(CServo.ServoType.Right4, 90));
+
+            // sounds of sports needs to be add
+            this.Add(10, new ActionSound("sound/hello2.wav"));
+
+            this.Add(20, new ActionServo(CServo.ServoType.Right4, 0));
+
+        }
+
+        /// <summary>
+        /// Walk of glory of Darth Vader
+        /// </summary>
+        public void CreateVaderSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            this.Add(0, new ActionSound("sound/starwars01.wav"));
+            // zapalanie diod od spodu
+            this.Add(10, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
+            this.Add(20, new ActionLed(CLeds.LedType.Bottom, 255, 255, 255));
+            
         }
     }
 
@@ -98,7 +167,10 @@ namespace MAF_Robot
         public enum ActionType
         {
             Servo = 0,
-            Sound = 5, Light = 6, Movement = 7, CameraMovement = 8
+            Sound = 5, 
+            Light = 6, 
+            Movement = 7, 
+            CameraMovement = 8
         };
 
         public ActionType actionType;
@@ -144,5 +216,20 @@ namespace MAF_Robot
         }
 
         public string SoundName;
+    }
+
+    public class ActionLed : ActionBase
+    {
+        public ActionLed(CLeds.LedType ledsType, int r, int g, int b)
+        {    
+            this.Type = ledsType;
+            this.Color.R = r;
+            this.Color.G = g;
+            this.Color.B = b;
+            this.actionType = ActionType.Light;
+        }
+
+        public CLeds.Color Color;
+        public CLeds.LedType Type;
     }
 }
