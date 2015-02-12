@@ -16,20 +16,27 @@ namespace MAF_Robot
             Eyes = 2,
         };
 
-        public struct Color
+        public struct SColor
         {
-            public int R {get; set;}
-            public int G {get; set;}
-            public int B {get; set;}
+            public int R;
+            public int G;
+            public int B;
+
+            public SColor(int r, int g, int b)
+            {
+                this.R = r;
+                this.G = g;
+                this.B = b;
+            }
         };
 
         private const int numberOfLedsTypes = 3;
-        public Color[] ledState { get; private set; }
+        public SColor[] ledState { get; private set; }
         public bool[] ledChangedState { get; private set; }
 
         public CLeds()
         {
-            ledState = new Color[numberOfLedsTypes];
+            ledState = new SColor[numberOfLedsTypes];
             ledChangedState = new bool[numberOfLedsTypes];
 
             // inicjalizacja stanu diod ustawiajac je na 0
@@ -43,20 +50,23 @@ namespace MAF_Robot
             }
         }
 
-        //zmien stan diod
-        public void ChangeLedState(LedType type, Color rgb)
-        {
-            this.ledState[((int)type)] = rgb;
-            this.ledChangedState[((int)type)] = true;
-        }
-
         // ta funkcja miała chyba ustawiać kolor
-        public void SetLedColors(LedType type, Color rgb)
+        public void SetLedColors(LedType type, SColor rgb)
         {
             this.ledState[(int)type].R = rgb.R;
             this.ledState[(int)type].G = rgb.G;
             this.ledState[(int)type].B = rgb.B;
             this.ledChangedState[(int)type] = true;
+        }
+
+        public void TurnOff()
+        {
+            for (int i = 0; i < numberOfLedsTypes; i++)
+            {
+                SColor zero = new SColor(0, 0, 0);
+
+                SetLedColors((LedType)i, zero);
+            }
         }
     }
 }

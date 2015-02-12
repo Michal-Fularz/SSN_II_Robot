@@ -39,7 +39,7 @@ namespace MAF_Robot
 
         public void Add(int time, ActionBase action)
         {
-            this.ActionStandardQueue.Enqueue(Tuple.Create<int, ActionBase>(time, action));
+            this.ActionStandardQueue.Enqueue(Tuple.Create<int, ActionBase>(time, action) );
         }
 
         public List<ActionBase> GetCurrentActions()
@@ -64,6 +64,9 @@ namespace MAF_Robot
             return listOfActions;
         }
 
+        /// <summary>
+        /// Sequence with shot sound and shake a head
+        /// </summary>
         public void CreateSampleSequence()
         {
             this.ActionStandardQueue.Clear();
@@ -81,6 +84,9 @@ namespace MAF_Robot
             }  
         }
 
+        /// <summary>
+        /// Playing YMCA song and robot dancing - NOT FINISHED 
+        /// </summary>
         public void CreateYMCASequence()
         {
             this.ActionStandardQueue.Clear();
@@ -93,6 +99,9 @@ namespace MAF_Robot
 
         }
 
+        /// <summary>
+        /// Surfing without music
+        /// </summary>
         public void CreateSurferSequence()
         {
             this.ActionStandardQueue.Clear();
@@ -128,6 +137,9 @@ namespace MAF_Robot
 
         }
 
+        /// <summary>
+        /// Hello sequence
+        /// </summary>
         public void CreateHiSequence()
         {
             this.ActionStandardQueue.Clear();
@@ -155,10 +167,83 @@ namespace MAF_Robot
             this.currentTime = 0;
 
             this.Add(0, new ActionSound("sound/starwars01.wav"));
-            // zapalanie diod od spodu
-            this.Add(10, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
-            this.Add(20, new ActionLed(CLeds.LedType.Bottom, 255, 255, 255));
             
+            for (int i = 1; i < this.duration; i+=10)
+            {
+                this.Add(i, new ActionLed(CLeds.LedType.Bottom, 0, 255, 0));
+                // zgas
+                this.Add(i + 5, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
+
+                // jazda do przodu
+                //if (i == 51)
+                //{
+                //    this.Add(i, new ActionMotor(40, 40));
+                //}
+                //if (i == 71)
+                //{
+                //    this.Add(i, new ActionMotor(0, 0));
+                //}
+
+            }
+        }
+
+        public void CreateLightSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            int l = 0;
+            
+            int r = 0;
+            int g = 0;
+            int b = 0;
+
+            //this.Add(0, new ActionSound("sound/starwars01.wav"));
+            while(l != this.duration)
+            {
+                this.Add(l, new ActionLed(CLeds.LedType.Chasis, r, g, b));
+                this.Add(l+2, new ActionLed(CLeds.LedType.Eyes, r, g, b));
+                this.Add(l+3, new ActionLed(CLeds.LedType.Bottom, r, g, b));
+                
+                if (r >= 120)
+                {
+                    r = 0;
+                }
+
+                if (g >= 120)
+                {
+                    g = 0;
+                }
+
+                if (b >= 120)
+                {
+                    b = 0;
+                }
+                
+                r+=5;
+                g+=10;
+                b+=15;
+                
+                l+=4;
+            }
+            
+
+            this.Add(94, new ActionLed(CLeds.LedType.Eyes, 0, 0, 0));
+            this.Add(95, new ActionLed(CLeds.LedType.Chasis, 0, 0, 0));
+            this.Add(96, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
+        }
+
+        public void CreateTickleSequence()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            //this.Add(0, new ActionSound("sound/starwars01.wav"));
+            //this.Add(l, new ActionLed(CLeds.LedType.Chasis, r, g, b));
         }
     }
 
@@ -229,7 +314,7 @@ namespace MAF_Robot
             this.actionType = ActionType.Light;
         }
 
-        public CLeds.Color Color;
+        public CLeds.SColor Color;
         public CLeds.LedType Type;
     }
 }

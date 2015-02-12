@@ -488,21 +488,6 @@ namespace SSN_II_Robot
             Init();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // ledState           
-            robot.SendLedsBottom(255, 255, 255);
-            
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            // watch out for 128 value - it's stranger but this makes the leds to stop working
-            robot.SendLedsBottom(196, 0, 0);
-            robot.SendLedsChasis(0, 128, 0);
-            robot.SendLedsEyes(0, 0, 128);
-        }
-
         private void testButtonLed_01_Click(object sender, RoutedEventArgs e)
         {
             testLed_1.Visibility = System.Windows.Visibility.Hidden;

@@ -443,8 +443,6 @@
                             <TextBox x:Name="tb_testowy" Height="31" Margin="280,249,221,0" Text="przyklad" VerticalAlignment="Top" Width="109"/>
                         </Grid>
                     </GroupBox>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="10,175,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
                     <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
                     <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="176,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
                     <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="224,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>

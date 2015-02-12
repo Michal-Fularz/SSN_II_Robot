@@ -37,6 +37,7 @@ namespace SSN_II_Robot
         public CInputs Inputs { get; set; }
         public COutputs Outputs { get; set; }
         public RobotState CurrentState;
+        private int SameStateCounter = 0;
 
         public CKinect Kinect { get; set; }
         public CSequence Sequence;
@@ -61,11 +62,13 @@ namespace SSN_II_Robot
             {
                 this.Perform(actionStopMotors);
                 this.Outputs.Sound.StopPlayingSound();
+                this.Outputs.Leds.TurnOff();
             }
             else if (this.CurrentState == RobotState.Safety)
             {
                 this.Perform(actionStopMotors);
                 this.Outputs.Sound.StopPlayingSound();
+                this.Outputs.Leds.TurnOff();
             }
             else if (this.CurrentState == RobotState.Idle)
             {
@@ -310,6 +313,11 @@ namespace SSN_II_Robot
                             {
                                 //this.CurrentState = RobotState.Kinect;
                                 this.Sequence.CreateVaderSequence();
+                                this.CurrentState = RobotState.SequnceInProgress; 
+                            }
+                            else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X))
+                            {
+                                this.Sequence.CreateLightSequence();
                                 this.CurrentState = RobotState.SequnceInProgress;
                             }
                         }
@@ -360,6 +368,14 @@ namespace SSN_II_Robot
                                 (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)))
                             {
                                 this.CurrentState = RobotState.Safety;
+                            }
+
+                            SameStateCounter++;
+
+                            if (SameStateCounter >= 10)
+                            {
+                                SameStateCounter = 0;
+                                this.CurrentState = RobotState.Idle;
                             }
                         }
                         break;
@@ -477,77 +493,46 @@ namespace SSN_II_Robot
 
         public void SendLeds()
         {
+
             for (int i = 0; i < this.Outputs.Leds.ledChangedState.Length; ++i)
             {
                 if (this.Outputs.Leds.ledChangedState[(int)i] == true)
                 {
-                    CLeds.Color newColor = this.Outputs.Leds.ledState[((int)i)];
+                    CLeds.SColor newColor = this.Outputs.Leds.ledState[((int)i)];
                     this.Outputs.Leds.ledChangedState[(int)i] = false;
 
-                    switch ((int)i)
+                    SendCommand command;
+                    switch (i)
                     {
-                        case 4:
-                            SendCommand command1 = new SendCommand((int)Command.LedsBottom);
-                            //command.AddArgument((int)(i + 1));
-                            command1.AddArgument(newColor.R);
-                            command1.AddArgument(newColor.G);
-                            command1.AddArgument(newColor.B);
-                            this.cmdMessenger.SendCommand(command1);
-
+                        case 0:
+                            {
+                                command = new SendCommand((int)Command.LedsBottom);
+                            }
                             break;
-                        case 5:
-                            SendCommand command2 = new SendCommand((int)Command.LedsChasis);
-                            //command.AddArgument((int)(i + 1));
-                            command2.AddArgument(newColor.R);
-                            command2.AddArgument(newColor.G);
-                            command2.AddArgument(newColor.B);
-                            this.cmdMessenger.SendCommand(command2);
+                        case 1:
+                            {
+                                command = new SendCommand((int)Command.LedsChasis);
+                            }
                             break;
-                        case 6:
-                            SendCommand command3 = new SendCommand((int)Command.LedsEyes);
-                            //command.AddArgument((int)(i + 1));
-                            command3.AddArgument(newColor.R);
-                            command3.AddArgument(newColor.G);
-                            command3.AddArgument(newColor.B);
-                            this.cmdMessenger.SendCommand(command3);
+                        case 2:
+                            {
+                                command = new SendCommand((int)Command.LedsEyes);
+                            }
                             break;
                         default:
+                            {
+                                command = new SendCommand((int)Command.LedsChasis);
+                            }
                             break;
                     }
+                    command.AddArgument(newColor.R);
+                    command.AddArgument(newColor.G);
+                    command.AddArgument(newColor.B);
+                    this.cmdMessenger.SendCommand(command);
+                    // watch out for 128 value - it's stranger but this makes the leds to stop working
                     
                 }
             }
-        }
-
-        public void SendLedsBottom(int r, int g, int b)
-        {
-            SendCommand command = new SendCommand((int)Command.LedsBottom);
-
-            command.AddArgument(r);
-            command.AddArgument(g);
-            command.AddArgument(b);
-            this.cmdMessenger.SendCommand(command);
-        }
-
-        public void SendLedsChasis(int r, int g, int b)
-        {
-            SendCommand command = new SendCommand((int)Command.LedsChasis);
-
-            command.AddArgument(r);
-            command.AddArgument(g);
-            command.AddArgument(b);
-            this.cmdMessenger.SendCommand(command);
-        }
-
-        public void SendLedsEyes(int r, int g, int b)
-        {
-            SendCommand command = new SendCommand((int)Command.LedsEyes);
-
-            command.AddArgument(r);
-            command.AddArgument(g);
-            command.AddArgument(b);
-            this.cmdMessenger.SendCommand(command);
-
         }
 
         // ------------------  C A L L B A C K S ---------------------
@@ -571,7 +556,6 @@ namespace SSN_II_Robot
         public CLeds Leds { get; set; }
 
         //public CLeds LedsChassis { get; set; }
-
         //public CLeds LedsFront { get; set; }
         //public CLeds LedsBottom { get; set; }
         //public CLeds LedsHead { get; set; }
