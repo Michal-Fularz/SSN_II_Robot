@@ -16,6 +16,12 @@ using System.Windows.Shapes;
 // gamepad
 using Microsoft.Xna.Framework.Input;
 
+// Kinect
+using Microsoft.Kinect;
+using Kinect.Toolbox;
+using Kinect.Toolbox.Record;
+using Kinect.Toolbox.Voice;
+
 using MAF_Robot;
 using System.Windows.Media;
 
@@ -31,6 +37,16 @@ namespace SSN_II_Robot
         private CSettings settings;
 
         System.Windows.Threading.DispatcherTimer mainTimer;
+
+        // some variables for Kinect
+        KinectSensor kinectSensor;
+        readonly ColorStreamManager colorManager = new ColorStreamManager();
+        readonly DepthStreamManager depthManager = new DepthStreamManager();
+        SkeletonDisplayManager skeletonDisplayManager;
+        private Skeleton[] skeletons;
+        readonly ContextTracker contextTracker = new ContextTracker();
+        BindableNUICamera nuiCamera;
+        
 
         public MainWindow()
         {
@@ -63,12 +79,8 @@ namespace SSN_II_Robot
             bw.DoWork += bw_DoWork;
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
-            // KINECT - image 1
-            robot.Kinect.Init();
-            this.Image.Source = robot.Kinect.Source;
-            
-            // Drawing robot on image 2
-            this.RobotImage.Source = robot.Kinect.Source;
+            // KINECT
+            robot.Kinect.KinectLoaded(kinectCanvas, Image);
 
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
             rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
@@ -121,11 +133,6 @@ namespace SSN_II_Robot
         /// <summary>
         /// Function to play music from wave
         /// </summary>
-        /// <param name="numberOfSound">int number of sound:
-        /// 0 - YMCA
-        /// 1 - sport
-        /// default - shot
-        /// </param>
         private void PlaySampleSound()
         {
             this.robot.Outputs.Sound.Play("sound/shot.wav");
@@ -567,8 +574,16 @@ namespace SSN_II_Robot
             this.PresentServo(robot.Outputs.Servos);
             
         }
-    
 
-        
+        private void Label_DragOver(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private void Label_DragOver_1(object sender, DragEventArgs e)
+        {
+
+        }
+         
     }
 }

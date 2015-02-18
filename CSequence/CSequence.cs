@@ -109,8 +109,25 @@ namespace MAF_Robot
             this.duration = 100;
             this.currentTime = 0;
 
-            //this.Add(0, new ActionServo(CServo.ServoType.Left1, 40));
+            // let's play music
 
+            // setting arms servos
+            this.Add(10, new ActionServo(CServo.ServoType.Right1, 35));
+            this.Add(10, new ActionServo(CServo.ServoType.Right3, 100));
+            this.Add(15, new ActionServo(CServo.ServoType.Right4, 65));
+            this.Add(20, new ActionServo(CServo.ServoType.Left2, 100));
+            // let's the light light
+            this.Add(25, new ActionLed(CLeds.LedType.Chasis, 247, 140, 45));
+            // let's add some move
+            this.Add(30, new ActionMotor(30, 0));
+            this.Add(40, new ActionMotor(0, 30));
+            this.Add(50, new ActionMotor(0, 0));
+            // turn off the light
+            this.Add(90, new ActionLed(CLeds.LedType.Chasis, 0, 0, 0));
+            this.Add(91, new ActionServo(CServo.ServoType.Right1, 0));
+            this.Add(92, new ActionServo(CServo.ServoType.Right3, 0));
+            this.Add(93, new ActionServo(CServo.ServoType.Right4, 0));
+            this.Add(94, new ActionServo(CServo.ServoType.Left2, 0));
         }
 
         /// <summary>
@@ -124,7 +141,7 @@ namespace MAF_Robot
             this.currentTime = 0;
 
             // sounds of sports needs to be add
-            this.Add(0, new ActionSound("sound/sport.wav"));
+            this.Add(0, new ActionSound("sound/silownia.wav"));
 
             this.Add(10, new ActionServo(CServo.ServoType.Left4, 90));
             this.Add(20, new ActionServo(CServo.ServoType.Left4, 0));
@@ -150,7 +167,7 @@ namespace MAF_Robot
             this.Add(0, new ActionServo(CServo.ServoType.Right4, 90));
 
             // sounds of sports needs to be add
-            this.Add(10, new ActionSound("sound/hello2.wav"));
+            this.Add(10, new ActionSound("sound/czesc.wav"));
 
             this.Add(20, new ActionServo(CServo.ServoType.Right4, 0));
 
@@ -174,15 +191,15 @@ namespace MAF_Robot
                 // zgas
                 this.Add(i + 5, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
 
-                // jazda do przodu
-                //if (i == 51)
-                //{
-                //    this.Add(i, new ActionMotor(40, 40));
-                //}
-                //if (i == 71)
-                //{
-                //    this.Add(i, new ActionMotor(0, 0));
-                //}
+                 //jazda do przodu
+                if (i == 51)
+                {
+                    this.Add(i, new ActionMotor(40, 40));
+                }
+                if (i == 71)
+                {
+                    this.Add(i, new ActionMotor(0, 0));
+                }
 
             }
         }
@@ -235,6 +252,7 @@ namespace MAF_Robot
             this.Add(96, new ActionLed(CLeds.LedType.Bottom, 0, 0, 0));
         }
 
+        // NOT READY
         public void CreateTickleSequence()
         {
             this.ActionStandardQueue.Clear();
@@ -244,6 +262,25 @@ namespace MAF_Robot
 
             //this.Add(0, new ActionSound("sound/starwars01.wav"));
             //this.Add(l, new ActionLed(CLeds.LedType.Chasis, r, g, b));
+        }
+
+        public void CreatePoliceSequance()
+        {
+            this.ActionStandardQueue.Clear();
+
+            this.duration = 100;
+            this.currentTime = 0;
+
+            this.Add(0, new ActionSound("sound/police.wav"));
+
+            for (int i = 5; i < (this.duration - 5); i+=10)
+            {
+                this.Add(i + 5, new ActionLed(CLeds.LedType.Chasis, 255, 0, 0));
+                this.Add(i + 10, new ActionLed(CLeds.LedType.Chasis, 0, 0, 255));    
+            }
+
+            this.Add(98, new ActionLed(CLeds.LedType.Chasis, 0, 0, 0));
+            
         }
     }
 

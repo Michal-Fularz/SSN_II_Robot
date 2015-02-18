@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using System.Xaml;
 
 
 // Kinect
 using Microsoft.Kinect;
 using Microsoft.Xna.Framework;
+using Kinect.Toolbox;
+using Kinect.Toolbox.Voice;
+//using Kinect.Toolbox.Record;
+
 
 // Saving data
 using System.IO;
+using Kinect.Toolbox.Record;
 
 namespace MAF_Robot
 {
@@ -23,7 +29,7 @@ namespace MAF_Robot
     {
         public string AngleAlpha { get; private set; }
         public string AngleBeta { get; private set; }
-        public Vector2 degrees { get; private set; }
+        public Microsoft.Xna.Framework.Vector2 degrees { get; private set; }
 
         public string Status { get; private set; }
 
@@ -128,6 +134,13 @@ namespace MAF_Robot
         /// Save data flag
         /// </summary>
         public bool SaveDataIsPressed = false;
+
+        KinectSensor kinectSensor;
+        readonly ColorStreamManager colorManager = new ColorStreamManager();
+        readonly DepthStreamManager depthManager = new DepthStreamManager();
+        SkeletonDisplayManager skeletonDisplayManager;
+        private Skeleton[] skeletons;
+        readonly ContextTracker contextTracker = new ContextTracker();
 
         /// <summary>
         /// Event handler for Kinect sensor's SkeletonFrameReady event
@@ -291,7 +304,6 @@ namespace MAF_Robot
             this.resultLeft = this.FindAngles(skeleton, JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft);
         }
 
-
         /// <summary>
         /// Maps a SkeletonPoint to lie within our render space and converts to Point
         /// </summary>
@@ -366,8 +378,6 @@ namespace MAF_Robot
             }
         }
 
-        #region My Kinect code
-
         public void Init()
         {
             // Look through all sensors and start the first connected one.
@@ -386,7 +396,7 @@ namespace MAF_Robot
             if (null != this.sensor)
             {
                 InitSkeletonStream();
-
+                
                 // Start the sensor!
                 try
                 {
@@ -403,6 +413,7 @@ namespace MAF_Robot
                 this.Status = "No Kinect Ready";// Properties.Resources.NoKinectReady;
             }
         }
+
 
         private void InitColorStream()
         {
@@ -434,12 +445,26 @@ namespace MAF_Robot
 
             // Add an event handler to be called whenever there is new color frame data
             this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+
         }
 
-        // todo
-        private void InitSkeletonStreamInColor()
+        private void InitSkeletonColorStream()
         {
-        
+            if (kinectSensor == null)
+                return;
+
+            kinectSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+            kinectSensor.ColorFrameReady += kinectRuntime_ColorFrameReady;
+
+            kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters
+            {
+                Smoothing = 0.5f,
+                Correction = 0.5f,
+                Prediction = 0.5f,
+                JitterRadius = 0.05f,
+                MaxDeviationRadius = 0.04f
+            });
+            kinectSensor.SkeletonFrameReady += kinectRuntime_SkeletonFrameReady;
         }
 
         private void InitRobotDraw()
@@ -465,14 +490,14 @@ namespace MAF_Robot
             Joint joint2 = skeleton.Joints[jType2];
             Joint joint3 = skeleton.Joints[jType3];
 
-            Vector3 vectorJoint1ToJoint2 = new Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, 0);
-            Vector3 vectorJoint2ToJoint3 = new Vector3(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y, 0);
+            Microsoft.Xna.Framework.Vector3 vectorJoint1ToJoint2 = new Microsoft.Xna.Framework.Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, 0);
+            Microsoft.Xna.Framework.Vector3 vectorJoint2ToJoint3 = new Microsoft.Xna.Framework.Vector3(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y, 0);
             vectorJoint1ToJoint2.Normalize();
             vectorJoint2ToJoint3.Normalize();
 
-            Vector3 crossProduct = Vector3.Cross(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
+            Microsoft.Xna.Framework.Vector3 crossProduct = Microsoft.Xna.Framework.Vector3.Cross(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
             double crossProductLength = crossProduct.Z;
-            double dotProduct = Vector3.Dot(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
+            double dotProduct = Microsoft.Xna.Framework.Vector3.Dot(vectorJoint1ToJoint2, vectorJoint2ToJoint3);
             double segmentAngle = Math.Atan2(crossProductLength, dotProduct);
 
             // Convert the result to degrees.
@@ -664,6 +689,146 @@ namespace MAF_Robot
                 }
             }
         }
-        #endregion
+
+        public void KinectLoaded(System.Windows.Controls.Canvas kinectCanvas, System.Windows.Controls.Image image)
+        {
+            //listen to any status change for Kinects
+            KinectSensor.KinectSensors.StatusChanged += Kinects_StatusChanged;
+
+            //loop through all the Kinects attached to this PC, and start the first that is connected without an error.
+            foreach (KinectSensor kinect in KinectSensor.KinectSensors)
+            {
+                if (kinect.Status == KinectStatus.Connected)
+                {
+                    kinectSensor = kinect;
+                    break;
+                }
+            }
+
+            if (KinectSensor.KinectSensors.Count == 0)
+                MessageBox.Show("No Kinect found");
+            else
+                Initialize(kinectCanvas, image);
+        }
+
+        private void Initialize(System.Windows.Controls.Canvas kinectCanvas, System.Windows.Controls.Image image)
+        {
+            if (kinectSensor == null)
+                return;
+
+            kinectSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+            kinectSensor.ColorFrameReady += kinectRuntime_ColorFrameReady;
+
+            kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters
+            {
+                Smoothing = 0.5f,
+                Correction = 0.5f,
+                Prediction = 0.5f,
+                JitterRadius = 0.05f,
+                MaxDeviationRadius = 0.04f
+            });
+            kinectSensor.SkeletonFrameReady += kinectRuntime_SkeletonFrameReady;
+
+            skeletonDisplayManager = new SkeletonDisplayManager(kinectSensor, kinectCanvas);
+
+            kinectSensor.Start();
+
+            image.DataContext = colorManager;
+
+        }
+
+        void Kinects_StatusChanged(object sender, StatusChangedEventArgs e)
+        {
+            switch (e.Status)
+            {
+                case KinectStatus.Connected:
+                    if (kinectSensor == null)
+                    {
+                        kinectSensor = e.Sensor;
+                        //Initialize(kinectCanvas, image);
+                    }
+                    break;
+                case KinectStatus.Disconnected:
+                    if (kinectSensor == e.Sensor)
+                    {
+                        Clean();
+                        MessageBox.Show("Kinect was disconnected");
+                    }
+                    break;
+                case KinectStatus.NotReady:
+                    break;
+                case KinectStatus.NotPowered:
+                    if (kinectSensor == e.Sensor)
+                    {
+                        Clean();
+                        MessageBox.Show("Kinect is no more powered");
+                    }
+                    break;
+                default:
+                    MessageBox.Show("Unhandled Status: " + e.Status);
+                    break;
+            }
+        }
+
+        private void Clean()
+        {
+            if (kinectSensor != null)
+            {
+                kinectSensor.SkeletonFrameReady -= kinectRuntime_SkeletonFrameReady;
+                kinectSensor.ColorFrameReady -= kinectRuntime_ColorFrameReady;
+                kinectSensor.Stop();
+                kinectSensor = null;
+            }
+        }
+
+        void kinectRuntime_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            using (var frame = e.OpenColorImageFrame())
+            {
+                if (frame == null)
+                    return;
+
+                colorManager.Update(frame);
+            }
+        }
+        void kinectRuntime_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+
+            using (SkeletonFrame frame = e.OpenSkeletonFrame())
+            {
+                if (frame == null)
+                    return;
+
+                frame.GetSkeletons(ref skeletons);
+
+                if (skeletons.All(s => s.TrackingState == SkeletonTrackingState.NotTracked))
+                    return;
+
+                ProcessFrame(frame);
+            }
+        }
+        void ProcessFrame(ReplaySkeletonFrame frame)
+        {
+            Dictionary<int, string> stabilities = new Dictionary<int, string>();
+            foreach (var skeleton in frame.Skeletons)
+            {
+                if (skeleton.TrackingState != SkeletonTrackingState.Tracked)
+                    continue;
+
+                contextTracker.Add(skeleton.Position.ToVector3(), skeleton.TrackingId);
+                stabilities.Add(skeleton.TrackingId, contextTracker.IsStableRelativeToCurrentSpeed(skeleton.TrackingId) ? "Stable" : "Non stable");
+                if (!contextTracker.IsStableRelativeToCurrentSpeed(skeleton.TrackingId))
+                    continue;
+
+                foreach (Joint joint in skeleton.Joints)
+                {
+                    if (joint.TrackingState != JointTrackingState.Tracked)
+                        continue;
+                }
+            }
+
+            // ustawienie opcji seated (drugi argument)
+            skeletonDisplayManager.Draw(frame.Skeletons, false);
+        }     
     }
 }

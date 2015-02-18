@@ -337,18 +337,18 @@
 
             <TabItem x:Name="Tab3" Header="Szkielet" FontFamily="Segoe UI Light">
                 <Grid Background="#FFE5E5E5"  Margin="1,1,1,1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
-
                     <Grid Name="layoutGrid" Margin="10 0 10 0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <Image Name="Image" Width="243" Height="200"/>
-                        </Viewbox>
-                        <Viewbox Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <Image Name="RobotImage" Width="243" Height="200"/>
+                        <Viewbox Margin="5" Grid.RowSpan="1">
+                            <Grid Width="640" Height="480" ClipToBounds="True">
+                                <Image x:Name="Image" Source="{Binding Bitmap}" />
+                                <Canvas x:Name="kinectCanvas" />
+                                <Canvas x:Name="robotCanvas" />
+                            </Grid>
                         </Viewbox>
                         <StatusBar Grid.Row="1" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="Gray">
                             <StatusBarItem Padding="0 0 0 10">

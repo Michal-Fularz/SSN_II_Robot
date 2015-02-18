@@ -298,6 +298,30 @@ namespace SSN_II_Robot
                                 (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)))
                             {
                                 this.CurrentState = RobotState.Safety;
+                            } 
+                            else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.RightTrigger) && 
+                                    (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X))))
+                            {
+                                this.Sequence.CreateLightSequence();
+                                this.CurrentState = RobotState.SequnceInProgress;
+                            }
+                            else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.RightTrigger) &&
+                                    (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Y))))
+                            {
+                                this.Sequence.CreateVaderSequence();
+                                this.CurrentState = RobotState.SequnceInProgress;
+                            }
+                            else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.RightTrigger) &&
+                                    (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.A))))
+                            {
+                                this.Sequence.CreateSurferSequence();
+                                this.CurrentState = RobotState.SequnceInProgress;
+                            }
+                            else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.RightTrigger) &&
+                                    (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))))
+                            {
+                                this.Sequence.CreatePoliceSequance();
+                                this.CurrentState = RobotState.SequnceInProgress;
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Y))
                             {
@@ -312,12 +336,13 @@ namespace SSN_II_Robot
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))
                             {
                                 //this.CurrentState = RobotState.Kinect;
-                                this.Sequence.CreateVaderSequence();
-                                this.CurrentState = RobotState.SequnceInProgress; 
+                                this.Sequence.CreatePoliceSequance();
+                                this.CurrentState = RobotState.SequnceInProgress;
                             }
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X))
                             {
-                                this.Sequence.CreateLightSequence();
+                                //this.CurrentState = RobotState.Kinect;
+                                this.Sequence.CreatePoliceSequance();
                                 this.CurrentState = RobotState.SequnceInProgress;
                             }
                         }
@@ -325,7 +350,11 @@ namespace SSN_II_Robot
 
                     case RobotState.Kinect:
                         {
-                            if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back)) &&
+                            if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Start))
+                            {
+                                //Game is on
+                            }
+                            else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back)) &&
                                 (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)))
                             {
                                 this.CurrentState = RobotState.Safety;
