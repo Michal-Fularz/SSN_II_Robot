@@ -23,6 +23,8 @@ using Kinect.Toolbox.Record;
 using Kinect.Toolbox.Voice;
 using Microsoft.Win32;
 using System.IO;
+using System.Media;
+using System.Windows.Media.Imaging;
 
 using MAF_Robot;
 using System.Windows.Media;
@@ -628,6 +630,15 @@ namespace SSN_II_Robot
 
             colorManager.Update(e.ColorImageFrame);
         }
-         
+
+        /** Pop Up pn screen **/
+        private void btn_Fullscreen_Click(object sender, RoutedEventArgs e)
+        {
+            Tab5.IsSelected = true;
+            SoundPlayer player = new SoundPlayer("sound/nos.wav");
+            player.Play();
+        }
+       
+
     }
 }

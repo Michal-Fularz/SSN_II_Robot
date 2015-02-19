@@ -95,6 +95,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CRobot.cs" />
+    <Compile Include="MainWindow.Sequence.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -199,6 +200,9 @@
       <Project>{1b5a103e-6f47-4a2a-8bf8-2efaf4ebb8e8}</Project>
       <Name>CSound</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\smile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

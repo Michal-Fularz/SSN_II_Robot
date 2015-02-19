@@ -196,6 +196,7 @@
         </Style>
     </Window.Resources>
     <Grid x:Name="MainWindow1" Loaded="MainWindow1_Loaded">
+        
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                 <GradientStop Color="#FFBFB0B0" Offset="0.934"/>
@@ -206,7 +207,7 @@
             <Image Width="15" Height="15" Source="Pictures\exit03bw.png"/>
         </Button>
         <TextBlock HorizontalAlignment="Left" Margin="1037,6,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static sys:DateTime.Now}}" VerticalAlignment="Top" FontSize="14" Width="153"/>
-
+        
         <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="740" Margin="15,35,0,0" VerticalAlignment="Top" Width="1245" FontSize="18" FontFamily="Segoe UI Light" SelectionChanged="TabControl_SelectionChanged_1">
             <TabItem x:Name="Tab1" Header="Main" FontFamily="Segoe UI Light">
                 <Grid Background="#FFE5E5E5" Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
@@ -449,12 +450,17 @@
                     <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
                     <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
                     <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
+                    <Button x:Name="btn_Fullscreen" Content="Fullscreen" HorizontalAlignment="Left" Height="30" Margin="10,315,0,0" VerticalAlignment="Top" Width="131" Click="btn_Fullscreen_Click"/>
 
 
 
                 </Grid>
             </TabItem>
-        </TabControl>
-
+            <TabItem x:Name="Tab5" Header="Face" FontFamily="Segoe UI Light" Visibility="Hidden">
+                <Grid Background="#FFE5E5E5"  Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234" >
+                    <Image x:Name="imgFullscreen" Source="Pictures\smile.png" Visibility="Visible" VerticalAlignment="Center"/>
+                </Grid>  
+            </TabItem>
+        </TabControl>        
     </Grid>
 </Window>
