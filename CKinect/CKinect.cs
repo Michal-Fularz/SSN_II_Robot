@@ -807,7 +807,7 @@ namespace MAF_Robot
                 ProcessFrame(frame);
             }
         }
-        void ProcessFrame(ReplaySkeletonFrame frame)
+        public void ProcessFrame(ReplaySkeletonFrame frame)
         {
             Dictionary<int, string> stabilities = new Dictionary<int, string>();
             foreach (var skeleton in frame.Skeletons)
@@ -830,5 +830,8 @@ namespace MAF_Robot
             // ustawienie opcji seated (drugi argument)
             skeletonDisplayManager.Draw(frame.Skeletons, false);
         }     
+
+
+
     }
 }

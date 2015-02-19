@@ -356,7 +356,7 @@
                             </StatusBarItem>
                         </StatusBar>
 
-                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="0,5,781,5" FontSize="36" Height="100" FontWeight="Bold">
+                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton angles" Margin="0,12,781,5" FontSize="36" FontWeight="Bold">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="393*"/>
@@ -368,14 +368,14 @@
                                 <TextBlock Name="tb_gamma" Grid.Column="2" FontSize="22" VerticalAlignment="Center">0</TextBlock>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Grid.Row="2" Header="Save data" FontSize="36" Margin="438,5,432,5">
+                        <GroupBox Grid.Row="2" Header="Save data" FontSize="36" Margin="438,5,585,5">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="393*"/>
-                                    <ColumnDefinition Width="408*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="btn_SaveKinect" Grid.Column="0" Content="Save" HorizontalAlignment="Center" Height="49" Margin="5,0,0,0" VerticalAlignment="Center" Width="153" FontSize="18" Click="btn_SaveKinect_Click"/>
-                                <Label x:Name="lbl_SaveDataState" Grid.Column="1" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+                                <Button x:Name="btn_SaveKinect" Content="Save" HorizontalAlignment="Center" Height="49" Margin="10,7,23,10" VerticalAlignment="Center" Width="146" FontSize="18" Click="btn_SaveKinect_Click"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="Draw Robot" FontSize="36" Margin="634,5,356,5">
+                            <Grid>
+                                <Button x:Name="btn_drawRobot" Content="Draw" HorizontalAlignment="Center" Height="49" VerticalAlignment="Center" Width="149" FontSize="18" RenderTransformOrigin="-0.178,0.755" Margin="10,8,53,10" Click="drawRobot_Click" />
                             </Grid>
                         </GroupBox>
 
@@ -449,7 +449,7 @@
                     <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
                     <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
                     <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
-                    
+
 
 
                 </Grid>

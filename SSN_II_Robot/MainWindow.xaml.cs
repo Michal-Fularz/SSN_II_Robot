@@ -21,6 +21,8 @@ using Microsoft.Kinect;
 using Kinect.Toolbox;
 using Kinect.Toolbox.Record;
 using Kinect.Toolbox.Voice;
+using Microsoft.Win32;
+using System.IO;
 
 using MAF_Robot;
 using System.Windows.Media;
@@ -39,14 +41,10 @@ namespace SSN_II_Robot
         System.Windows.Threading.DispatcherTimer mainTimer;
 
         // some variables for Kinect
-        KinectSensor kinectSensor;
+        KinectReplay replay;
+        bool displayDepth;
         readonly ColorStreamManager colorManager = new ColorStreamManager();
         readonly DepthStreamManager depthManager = new DepthStreamManager();
-        SkeletonDisplayManager skeletonDisplayManager;
-        private Skeleton[] skeletons;
-        readonly ContextTracker contextTracker = new ContextTracker();
-        BindableNUICamera nuiCamera;
-        
 
         public MainWindow()
         {
@@ -548,7 +546,7 @@ namespace SSN_II_Robot
             robot.Kinect.SaveDataIsPressed = true;
             if (robot.Kinect.SaveDataIsPressed)
             {
-                lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
+                //lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -583,6 +581,52 @@ namespace SSN_II_Robot
         private void Label_DragOver_1(object sender, DragEventArgs e)
         {
 
+        }
+
+        /** Part were I try draw a robot skeleton from file **/
+        private void drawRobot_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog { Title = "Select filename", Filter = "Replay files|*.replay" };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                if (replay != null)
+                {
+                    replay.SkeletonFrameReady -= replay_SkeletonFrameReady;
+                    replay.ColorImageFrameReady -= replay_ColorImageFrameReady;
+                    replay.Stop();
+                }
+                Stream recordStream = File.OpenRead(openFileDialog.FileName);
+
+                replay = new KinectReplay(recordStream);
+
+                replay.SkeletonFrameReady += replay_SkeletonFrameReady;
+                replay.ColorImageFrameReady += replay_ColorImageFrameReady;
+                replay.DepthImageFrameReady += replay_DepthImageFrameReady;
+
+                replay.Start();
+            }
+        }
+
+        void replay_SkeletonFrameReady(object sender, ReplaySkeletonFrameReadyEventArgs e)
+        {
+            robot.Kinect.ProcessFrame(e.SkeletonFrame);
+        }
+
+        void replay_DepthImageFrameReady(object sender, ReplayDepthImageFrameReadyEventArgs e)
+        {
+            if (!displayDepth)
+                return;
+
+            depthManager.Update(e.DepthImageFrame);
+        }
+
+        void replay_ColorImageFrameReady(object sender, ReplayColorImageFrameReadyEventArgs e)
+        {
+            if (displayDepth)
+                return;
+
+            colorManager.Update(e.ColorImageFrame);
         }
          
     }
