@@ -55,10 +55,10 @@
       <HintPath>..\_Libraries\CmdMessenger\CommandMessenger.dll</HintPath>
     </Reference>
     <Reference Include="Kinect.Toolbox">
-      <HintPath>..\..\..\Visual Studio 2013\Projects\KinectToolbox\bin\Debug\Kinect.Toolbox.dll</HintPath>
+      <HintPath>..\_Libraries\KinectToolbox\Kinect.Toolbox.dll</HintPath>
     </Reference>
     <Reference Include="Kinect.Toolbox.Voice">
-      <HintPath>..\..\..\Visual Studio 2013\Projects\KinectToolbox\Kinect.Toolbox.Voice\bin\Debug\Kinect.Toolbox.Voice.dll</HintPath>
+      <HintPath>..\_Libraries\KinectToolbox\Kinect.Toolbox.Voice.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -95,7 +95,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CRobot.cs" />
-    <Compile Include="MainWindow.Sequence.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
