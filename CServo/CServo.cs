@@ -58,8 +58,11 @@ namespace MAF_Robot
         {
             if ((newServoPosition >= 0) && (newServoPosition <= 100))
             {
-                this.servosPosition[((int)servo)] = newServoPosition;
-                this.servosChangedPosition[((int)servo)] = true;
+                if (newServoPosition != this.servosPosition[((int)servo)])
+                {
+                    this.servosPosition[((int)servo)] = newServoPosition;
+                    this.servosChangedPosition[((int)servo)] = true;
+                }
             }
         }
 

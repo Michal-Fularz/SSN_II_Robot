@@ -18,9 +18,10 @@ using Microsoft.Xna.Framework.Input;
 
 // Kinect
 using Microsoft.Kinect;
-using Kinect.Toolbox;
-using Kinect.Toolbox.Record;
-using Kinect.Toolbox.Voice;
+using LightBuzz.Vitruvius;
+//using Kinect.Toolbox;
+//using Kinect.Toolbox.Record;
+//using Kinect.Toolbox.Voice;
 using Microsoft.Win32;
 using System.IO;
 using System.Media;
@@ -28,6 +29,7 @@ using System.Windows.Media.Imaging;
 
 using MAF_Robot;
 using System.Windows.Media;
+using System.Threading;
 
 
 namespace SSN_II_Robot
@@ -43,10 +45,15 @@ namespace SSN_II_Robot
         System.Windows.Threading.DispatcherTimer mainTimer;
 
         // some variables for Kinect
-        KinectReplay replay;
-        bool displayDepth;
-        readonly ColorStreamManager colorManager = new ColorStreamManager();
-        readonly DepthStreamManager depthManager = new DepthStreamManager();
+        //KinectReplay replay;
+        //bool displayDepth;
+        //readonly ColorStreamManager colorManager = new ColorStreamManager();
+        //readonly DepthStreamManager depthManager = new DepthStreamManager();
+
+        CKinectVitruvius kinectVitruvius;
+        private GestureType expectedPosture = GestureType.None;
+        private GestureType previouslyExpectedPosture = GestureType.None;
+        private int score = 0;
 
         public MainWindow()
         {
@@ -62,6 +69,12 @@ namespace SSN_II_Robot
         {
             settings = new CSettings();
             settings.LoadFromFile("settings\\settings.txt");
+
+            Thread.Sleep(100);
+
+            kinectVitruvius = new CKinectVitruvius(vitruviusImage, vitruviusCanvas);
+            kinectVitruvius.Init();
+            kinectVitruvius.GestureRecognized += GestureRecognized;
 
             robot = new CRobot(settings.SerialPortName);
 
@@ -80,7 +93,7 @@ namespace SSN_II_Robot
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 
             // KINECT
-            robot.Kinect.KinectLoaded(kinectCanvas, Image);
+            //robot.Kinect.KinectLoaded(kinectCanvas, Image);
 
             rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
             rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
@@ -88,6 +101,89 @@ namespace SSN_II_Robot
             mainTimer.Start();
 
             //meMain.LoadedBehavior = MediaState.Manual;
+        }
+
+        private void GestureRecognized(object sender, GestureEventArgs e)
+        {
+            // Display the gesture type.
+            this.vitruviusStatusBarText.Text = e.Name;
+
+            if (this.robot.CurrentState == CRobot.RobotState.Kinect)
+            {
+                if (this.robot.kinectSate == CRobot.KinectState.RightUp1 || this.robot.kinectSate == CRobot.KinectState.RightUp2 || this.robot.kinectSate == CRobot.KinectState.RightUp3)
+                {
+                    this.vitruviusStatusBarText.Text += ", waiting for RightUp";
+                    if (e.Type == GestureType.RightUp)
+                    {
+                        this.robot.flagKinectRequiredPostionDone = true;
+                        this.vitruviusStatusBarText.Text += "Found!!!";
+                    }
+                }
+                else
+                {
+                    this.vitruviusStatusBarText.Text += ", waiting for LetterSmallW";
+                    if (e.Type == GestureType.LetterSmallW)
+                    {
+                        this.robot.flagKinectRequiredPostionDone = true;
+                        this.vitruviusStatusBarText.Text += "Found!!!";
+                    }
+                }
+            }
+            else
+            {
+                if (e.Type == expectedPosture)
+                {
+                    this.score += 1;
+                    this.tb_vitruviusX.Text = score.ToString();
+
+                    this.previouslyExpectedPosture = this.expectedPosture;
+                    if (this.expectedPosture == GestureType.LetterW)
+                    {
+                        this.expectedPosture = GestureType.HandsInTheAir;
+                        this.kinectVitruvius.flagDrawLetterWSkeleton = false;
+                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = true;
+                    }
+                    else if (this.expectedPosture == GestureType.HandsInTheAir)
+                    {
+                        this.expectedPosture = GestureType.LetterW;
+                        this.kinectVitruvius.flagDrawLetterWSkeleton = true;
+                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = false;
+                    }
+                }
+            }
+
+            // Do something according to the type of the gesture.
+            switch (e.Type)
+            {
+                case GestureType.LetterW:
+                    break;
+                case GestureType.HandsInTheAir:
+                    break;
+                case GestureType.NoGesture:
+                    break;
+                case GestureType.JoinedHands:
+                    break;
+                case GestureType.Menu:
+                    break;
+                case GestureType.SwipeDown:
+                    break;
+                case GestureType.SwipeLeft:
+                    break;
+                case GestureType.SwipeRight:
+                    break;
+                case GestureType.SwipeUp:
+                    break;
+                case GestureType.WaveLeft:
+                    break;
+                case GestureType.WaveRight:
+                    break;
+                case GestureType.ZoomIn:
+                    break;
+                case GestureType.ZoomOut:
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Deinit()
@@ -153,8 +249,8 @@ namespace SSN_II_Robot
             
             PresentServo(robot.Outputs.Servos);
 
-            tb_alpha.Text = robot.Kinect.resultRight.ToString("000.00");
-            tb_beta.Text = robot.Kinect.resultLeft.ToString("000.00");
+            //tb_alpha.Text = robot.Kinect.resultRight.ToString("000.00");
+            //tb_beta.Text = robot.Kinect.resultLeft.ToString("000.00");
 
             // Displaying robot state on lbl
             lblRobotState.Content = robot.CurrentState;
@@ -545,16 +641,15 @@ namespace SSN_II_Robot
         /// <param name="e"></param>
         private void btn_SaveKinect_Click(object sender, RoutedEventArgs e)
         {
-            robot.Kinect.SaveDataIsPressed = true;
-            if (robot.Kinect.SaveDataIsPressed)
-            {
-                //lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
-            }
+            //robot.Kinect.SaveDataIsPressed = true;
+            //if (robot.Kinect.SaveDataIsPressed)
+            //{
+            //    //lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
+            //}
         }
 
         private void ServoSave(object sender, RoutedEventArgs e)
-        {
-            
+        {   
             robot.Outputs.Servos.SaveData(tb_ServoName.Text);
         }
 
@@ -588,48 +683,48 @@ namespace SSN_II_Robot
         /** Part were I try draw a robot skeleton from file **/
         private void drawRobot_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog { Title = "Select filename", Filter = "Replay files|*.replay" };
+            //OpenFileDialog openFileDialog = new OpenFileDialog { Title = "Select filename", Filter = "Replay files|*.replay" };
 
-            if (openFileDialog.ShowDialog() == true)
-            {
-                if (replay != null)
-                {
-                    replay.SkeletonFrameReady -= replay_SkeletonFrameReady;
-                    replay.ColorImageFrameReady -= replay_ColorImageFrameReady;
-                    replay.Stop();
-                }
-                Stream recordStream = File.OpenRead(openFileDialog.FileName);
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    if (replay != null)
+            //    {
+            //        replay.SkeletonFrameReady -= replay_SkeletonFrameReady;
+            //        replay.ColorImageFrameReady -= replay_ColorImageFrameReady;
+            //        replay.Stop();
+            //    }
+            //    Stream recordStream = File.OpenRead(openFileDialog.FileName);
 
-                replay = new KinectReplay(recordStream);
+            //    replay = new KinectReplay(recordStream);
 
-                replay.SkeletonFrameReady += replay_SkeletonFrameReady;
-                replay.ColorImageFrameReady += replay_ColorImageFrameReady;
-                replay.DepthImageFrameReady += replay_DepthImageFrameReady;
+            //    replay.SkeletonFrameReady += replay_SkeletonFrameReady;
+            //    replay.ColorImageFrameReady += replay_ColorImageFrameReady;
+            //    replay.DepthImageFrameReady += replay_DepthImageFrameReady;
 
-                replay.Start();
-            }
+            //    replay.Start();
+            //}
         }
 
-        void replay_SkeletonFrameReady(object sender, ReplaySkeletonFrameReadyEventArgs e)
-        {
-            robot.Kinect.ProcessFrame(e.SkeletonFrame);
-        }
+        //void replay_SkeletonFrameReady(object sender, ReplaySkeletonFrameReadyEventArgs e)
+        //{
+        //    robot.Kinect.ProcessFrame(e.SkeletonFrame);
+        //}
 
-        void replay_DepthImageFrameReady(object sender, ReplayDepthImageFrameReadyEventArgs e)
-        {
-            if (!displayDepth)
-                return;
+        //void replay_DepthImageFrameReady(object sender, ReplayDepthImageFrameReadyEventArgs e)
+        //{
+        //    if (!displayDepth)
+        //        return;
 
-            depthManager.Update(e.DepthImageFrame);
-        }
+        //    depthManager.Update(e.DepthImageFrame);
+        //}
 
-        void replay_ColorImageFrameReady(object sender, ReplayColorImageFrameReadyEventArgs e)
-        {
-            if (displayDepth)
-                return;
+        //void replay_ColorImageFrameReady(object sender, ReplayColorImageFrameReadyEventArgs e)
+        //{
+        //    if (displayDepth)
+        //        return;
 
-            colorManager.Update(e.ColorImageFrame);
-        }
+        //    colorManager.Update(e.ColorImageFrame);
+        //}
 
         /** Pop Up pn screen **/
         private void btn_Fullscreen_Click(object sender, RoutedEventArgs e)
@@ -637,6 +732,22 @@ namespace SSN_II_Robot
             Tab5.IsSelected = true;
             SoundPlayer player = new SoundPlayer("sound/nos.wav");
             player.Play();
+        }
+
+        private void btn_VitriuviusDrawSavedSkeleton_Click(object sender, RoutedEventArgs e)
+        {
+            this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = true;
+            this.expectedPosture = GestureType.HandsInTheAir;
+        }
+
+        private void btn_VitriviusSaveLetterWSkeleton_Click(object sender, RoutedEventArgs e)
+        {
+            this.kinectVitruvius.SaveLetterWSkeleton();
+        }
+
+        private void btn_VitriviusSaveHandsInTheAirSkeleton_Click(object sender, RoutedEventArgs e)
+        {
+            this.kinectVitruvius.SaveHandsInTheAirSkeleton();
         }
        
 

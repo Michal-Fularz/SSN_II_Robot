@@ -196,7 +196,7 @@
         </Style>
     </Window.Resources>
     <Grid x:Name="MainWindow1" Loaded="MainWindow1_Loaded">
-        
+
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                 <GradientStop Color="#FFBFB0B0" Offset="0.934"/>
@@ -207,7 +207,7 @@
             <Image Width="15" Height="15" Source="Pictures\exit03bw.png"/>
         </Button>
         <TextBlock HorizontalAlignment="Left" Margin="1037,6,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static sys:DateTime.Now}}" VerticalAlignment="Top" FontSize="14" Width="153"/>
-        
+
         <TabControl x:Name="tcMain" HorizontalAlignment="Left" Height="740" Margin="15,35,0,0" VerticalAlignment="Top" Width="1245" FontSize="18" FontFamily="Segoe UI Light" SelectionChanged="TabControl_SelectionChanged_1">
             <TabItem x:Name="Tab1" Header="Main" FontFamily="Segoe UI Light">
                 <Grid Background="#FFE5E5E5" Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
@@ -336,7 +336,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem x:Name="Tab3" Header="Szkielet" FontFamily="Segoe UI Light">
+            <TabItem x:Name="Tab3" Header="Szkielet" FontFamily="Segoe UI Light" Height="30" VerticalAlignment="Top">
                 <Grid Background="#FFE5E5E5"  Margin="1,1,1,1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
                     <Grid Name="layoutGrid" Margin="10 0 10 0">
                         <Grid.RowDefinitions>
@@ -459,8 +459,64 @@
             <TabItem x:Name="Tab5" Header="Face" FontFamily="Segoe UI Light" Visibility="Hidden">
                 <Grid Background="#FFE5E5E5"  Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234" >
                     <Image x:Name="imgFullscreen" Source="Pictures\smile.png" Visibility="Visible" VerticalAlignment="Center"/>
-                </Grid>  
+                </Grid>
             </TabItem>
-        </TabControl>        
+
+            <TabItem x:Name="TabVitruvius" Header="Vitruvius" FontFamily="Segoe UI Light" Height="30" VerticalAlignment="Top">
+                <Grid Background="#FFE5E5E5"  Margin="1,1,1,1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234">
+                    <Grid Name="layoutGridVitruvius" Margin="10 0 10 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Viewbox Margin="5" Grid.RowSpan="1">
+                            <Grid Width="640" Height="480" ClipToBounds="True">
+                                <Image x:Name="vitruviusImage" Source="{Binding Bitmap}" />
+                                <Canvas x:Name="vitruviusCanvas" />
+                            </Grid>
+                        </Viewbox>
+
+                        <StatusBar Grid.Row="1" HorizontalAlignment="Stretch" Name="vitruviusStatusBar" VerticalAlignment="Bottom" Background="White" Foreground="Gray">
+                            <StatusBarItem Padding="0 0 0 10">
+                                <TextBlock Name="vitruviusStatusBarText" Margin="0 0 0 0">Status bar!</TextBlock>
+                            </StatusBarItem>
+                        </StatusBar>
+
+                        <GroupBox Grid.Row="2" HorizontalAlignment="Stretch" Header="Skeleton X, Y, Z" Margin="0,12,781,5" FontSize="36" FontWeight="Bold">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="393*"/>
+                                    <ColumnDefinition Width="408*"/>
+                                    <ColumnDefinition Width="401*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Name="tb_vitruviusX" Grid.Column="0" FontSize="22" VerticalAlignment="Center">0</TextBlock>
+                                <TextBlock Name="tb_vitruviusY" Grid.Column="1"  FontSize="22" VerticalAlignment="Center">0</TextBlock>
+                                <TextBlock Name="tb_vitruviusZ" Grid.Column="2" FontSize="22" VerticalAlignment="Center">0</TextBlock>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="Save letter W" FontSize="32" Margin="438,5,550,5">
+                            <Grid>
+                                <Button x:Name="btn_vitruviusSaveLetterWSkeleton" Content="Save" HorizontalAlignment="Center" Height="49" Margin="36,10,32,8" VerticalAlignment="Center" Width="146" FontSize="18" Click="btn_VitriviusSaveLetterWSkeleton_Click"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="Save hands in the air" FontSize="32" Margin="669,5,248,5">
+                            <Grid>
+                                <Button x:Name="btn_vitruviusSaveHandInTheAirSkeleton" Content="Save" HorizontalAlignment="Center" Height="49" Margin="36,10,32,8" VerticalAlignment="Center" Width="146" FontSize="18" Click="btn_VitriviusSaveHandsInTheAirSkeleton_Click"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="2" Header="Draw skeleton" FontSize="32" Margin="980,5,10,5">
+                            <Grid>
+                                <Button x:Name="btn_vitruviusDrawSavedSkeleton" Content="Draw" HorizontalAlignment="Center" Height="49" VerticalAlignment="Center" Width="149" FontSize="18" RenderTransformOrigin="-0.178,0.755" Margin="37,19,32,10" Click="btn_VitriuviusDrawSavedSkeleton_Click" />
+                            </Grid>
+                        </GroupBox>
+
+                    </Grid>
+                </Grid>
+
+
+
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
