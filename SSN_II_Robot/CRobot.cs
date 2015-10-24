@@ -25,15 +25,18 @@ namespace SSN_II_Robot
 
         public enum KinectState : int
         {
-            RightUp1 = 0,
-            LetterSmallW1 = 1,
-            RightUp2 = 2,
-            LetterSmallW2 = 3,
-            RightUp3 = 4,
-            LetterSmallW3 = 5,
+            Start = 0,
+            RightUp1 = 1,
+            LetterSmallW1 = 2,
+            RightUp2 = 3,
+            LetterSmallW2 = 4,
+            RightUp3 = 5,
+            LetterSmallW3 = 6,
+            Finish = 7,
         };
-        public KinectState kinectSate = KinectState.RightUp1;
+        public KinectState kinectSate = KinectState.Start;
         public bool flagKinectRequiredPostionDone = false;
+        public int kinectStateCounter = 0;
 
         public enum RobotState : int
         {
@@ -54,7 +57,41 @@ namespace SSN_II_Robot
         //public CKinect Kinect { get; set; }
         public CSequence Sequence;
 
+        Random rand = new Random();
+
         private ActionBase actionStopMotors = new ActionMotor(0, 0);
+        private List<ActionBase> actionsServoNeutral = new List<ActionBase> {
+            new ActionServo(CServo.ServoType.Left1, 0),
+            new ActionServo(CServo.ServoType.Left2, 10),
+            new ActionServo(CServo.ServoType.Left3, 0),
+            new ActionServo(CServo.ServoType.Left4, 0),
+            new ActionServo(CServo.ServoType.Right1, 0),
+            new ActionServo(CServo.ServoType.Right2, 10),
+            new ActionServo(CServo.ServoType.Right3, 0),
+            new ActionServo(CServo.ServoType.Right4, 0)
+        };
+
+        private List<ActionBase> actionsServoRightUp = new List<ActionBase> {
+            new ActionServo(CServo.ServoType.Left1, 0),
+            new ActionServo(CServo.ServoType.Left2, 0),
+            new ActionServo(CServo.ServoType.Left3, 0),
+            new ActionServo(CServo.ServoType.Left4, 0),
+            new ActionServo(CServo.ServoType.Right1, 0),
+            new ActionServo(CServo.ServoType.Right2, 100),
+            new ActionServo(CServo.ServoType.Right3, 0),
+            new ActionServo(CServo.ServoType.Right4, 0)
+        };
+
+        private List<ActionBase> actionsServoLetterSmallW = new List<ActionBase> {
+            new ActionServo(CServo.ServoType.Left1, 25),
+            new ActionServo(CServo.ServoType.Left2, 0),
+            new ActionServo(CServo.ServoType.Left3, 40),
+            new ActionServo(CServo.ServoType.Left4, 100),
+            new ActionServo(CServo.ServoType.Right1, 25),
+            new ActionServo(CServo.ServoType.Right2, 0),
+            new ActionServo(CServo.ServoType.Right3, 40),
+            new ActionServo(CServo.ServoType.Right4, 100)
+        };
 
         public CRobot(string serialPortName)
         {
@@ -214,62 +251,90 @@ namespace SSN_II_Robot
             }
             else if (this.CurrentState == RobotState.Kinect)
             {
+                int soundNumber = rand.Next(1, 6);
+                string soundName = "sound/m0" + soundNumber.ToString() + ".wav";
+
                 switch(this.kinectSate)
                 {
-                    case KinectState.RightUp1:
-                        this.Perform(new ActionServo(CServo.ServoType.Left1, 20));
-                        this.Perform(new ActionServo(CServo.ServoType.Left2, 20));
-                        this.Perform(new ActionServo(CServo.ServoType.Right1, 20));
-                        this.Perform(new ActionServo(CServo.ServoType.Right2, 20));
+                    case KinectState.Start:
+                        this.Perform(actionsServoNeutral);
+                        this.Perform(new ActionSound("sound/m00.wav"));
+                        this.kinectStateCounter++;
 
+                        if (kinectStateCounter > 10)
+                        {
+                            this.kinectStateCounter = 0;
+                            this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoRightUp);
+                        }
+                        break;
+
+                    case KinectState.RightUp1:
                         if (this.flagKinectRequiredPostionDone)
                         {
-                            this.flagKinectRequiredPostionDone = false;
                             this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoLetterSmallW);
+                            this.Perform(new ActionSound(soundName));
                         }
                         break;
                     case KinectState.LetterSmallW1:
-                        this.Perform(new ActionServo(CServo.ServoType.Left1, 10));
-                        this.Perform(new ActionServo(CServo.ServoType.Left2, 10));
-                        this.Perform(new ActionServo(CServo.ServoType.Right1, 10));
-                        this.Perform(new ActionServo(CServo.ServoType.Right2, 10));
-
                         if (this.flagKinectRequiredPostionDone)
                         {
-                            this.flagKinectRequiredPostionDone = false;
                             this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoRightUp);
+                            this.Perform(new ActionSound(soundName));
                         }
                         break;
                     case KinectState.RightUp2:
                         if (this.flagKinectRequiredPostionDone)
                         {
-                            this.flagKinectRequiredPostionDone = false;
                             this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoLetterSmallW);
+                            this.Perform(new ActionSound(soundName));
                         }
                         break;
                     case KinectState.LetterSmallW2:
                         if (this.flagKinectRequiredPostionDone)
                         {
-                            this.flagKinectRequiredPostionDone = false;
                             this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoRightUp);
+                            this.Perform(new ActionSound(soundName));
                         }
                         break;
                     case KinectState.RightUp3:
                         if (this.flagKinectRequiredPostionDone)
                         {
-                            this.flagKinectRequiredPostionDone = false;
                             this.kinectSate += 1;
+                            this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoLetterSmallW);
+                            this.Perform(new ActionSound(soundName));
                         }
                         break;
                     case KinectState.LetterSmallW3:
                         if (this.flagKinectRequiredPostionDone)
                         {
+                            this.kinectSate += 1;
                             this.flagKinectRequiredPostionDone = false;
+                            this.Perform(actionsServoNeutral);
+                        }
+                        break;
+                    case KinectState.Finish:
+                        this.kinectStateCounter++;
+
+                        if (kinectStateCounter > 10)
+                        {
+                            this.kinectStateCounter = 0;
                             this.kinectSate = KinectState.RightUp1;
+                            this.flagKinectRequiredPostionDone = false;
+
                             this.CurrentState = RobotState.Idle;
                         }
                         break;
-
                 }
 
 
@@ -317,6 +382,14 @@ namespace SSN_II_Robot
                     }
                     break;
             }
+        }
+
+        public void Perform(List<ActionBase> actions)
+        {
+            foreach (var action in actions)
+	        {
+		        this.Perform(action);
+	        }
         }
 
         public void UpdateOutputsBasedOnInputs()
@@ -406,6 +479,7 @@ namespace SSN_II_Robot
                             else if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.B))
                             {
                                 this.CurrentState = RobotState.Kinect;
+                                this.kinectSate = KinectState.Start;
                                 //this.Sequence.CreatePoliceSequance();
                                 //this.CurrentState = RobotState.SequnceInProgress;
                             }
@@ -423,7 +497,7 @@ namespace SSN_II_Robot
                             if (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Start))
                             {
                                 // Game is on
-                                this.kinectSate = KinectState.RightUp1;
+                                this.kinectSate = KinectState.Start;
                             }
                             else if ((this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.Back)) &&
                                 (this.Inputs.Gamepad.GamepadState.IsButtonDown(Microsoft.Xna.Framework.Input.Buttons.X)))
