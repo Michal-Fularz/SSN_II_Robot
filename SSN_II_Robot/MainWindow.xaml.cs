@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 
-
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -19,9 +18,6 @@ using Microsoft.Xna.Framework.Input;
 // Kinect
 using Microsoft.Kinect;
 using LightBuzz.Vitruvius;
-//using Kinect.Toolbox;
-//using Kinect.Toolbox.Record;
-//using Kinect.Toolbox.Voice;
 using Microsoft.Win32;
 using System.IO;
 using System.Media;
@@ -37,32 +33,26 @@ namespace SSN_II_Robot
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisposable
+    public sealed partial class MainWindow : Window, IDisposable 
     {
         private CRobot robot;
         private CSettings settings;
 
         System.Windows.Threading.DispatcherTimer mainTimer;
 
-        // some variables for Kinect
-        //KinectReplay replay;
-        //bool displayDepth;
-        //readonly ColorStreamManager colorManager = new ColorStreamManager();
-        //readonly DepthStreamManager depthManager = new DepthStreamManager();
-
-        CKinectVitruvius kinectVitruvius;
-        private GestureType expectedPosture = GestureType.None;
-        private GestureType previouslyExpectedPosture = GestureType.None;
-        private int score = 0;
-
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
+        {
+            Init();
+        }
+
         public void Dispose()
         {
-            Deinit();
+            this.Deinit();
         }
 
         private void Init()
@@ -82,114 +72,24 @@ namespace SSN_II_Robot
             robot.Inputs.Gamepad.OnDpadDown += new ButtonPressed(PreviousTabPage);
             //robot.Inputs.Gamepad.OnBack += new ButtonPressed(Exit);
 
-            //robot.Inputs.Gamepad.OnA += new ButtonPressed();
-
             mainTimer = new System.Windows.Threading.DispatcherTimer();
             mainTimer.Interval = TimeSpan.FromMilliseconds(100);
             mainTimer.Tick += mainTimer_Tick;
 
-            bw = new System.ComponentModel.BackgroundWorker();
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
-
             // KINECT
             //robot.Kinect.KinectLoaded(kinectCanvas, Image);
 
-            rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
+            // for unknown reason this was hardcoded for really long time (2016.02.09) :)
+            //rtbMain.AppendText("Aplikacja rozpoczęta: 2013-03-29 11:37:52" + Environment.NewLine);
+            rtbMain.AppendText("Aplikacja rozpoczęta: " + System.DateTime.Now.ToShortDateString() + System.DateTime.Now.ToShortTimeString() + Environment.NewLine);
             rtbMain.AppendText("Robot state: " + robot.CurrentState.ToString() + Environment.NewLine); ;
 
             mainTimer.Start();
-
-            //meMain.LoadedBehavior = MediaState.Manual;
-        }
-
-        private void GestureRecognized(object sender, GestureEventArgs e)
-        {
-            // Display the gesture type.
-            this.vitruviusStatusBarText.Text = e.Name;
-
-            if (this.robot.CurrentState == CRobot.RobotState.Kinect)
-            {
-                if (this.robot.kinectSate == CRobot.KinectState.RightUp1 || this.robot.kinectSate == CRobot.KinectState.RightUp2 || this.robot.kinectSate == CRobot.KinectState.RightUp3)
-                {
-                    this.vitruviusStatusBarText.Text += ", waiting for RightUp";
-                    if (e.Type == GestureType.RightUp)
-                    {
-                        this.robot.flagKinectRequiredPostionDone = true;
-                        this.vitruviusStatusBarText.Text += "Found!!!";
-                    }
-                }
-                else
-                {
-                    this.vitruviusStatusBarText.Text += ", waiting for LetterSmallW";
-                    if (e.Type == GestureType.LetterSmallW)
-                    {
-                        this.robot.flagKinectRequiredPostionDone = true;
-                        this.vitruviusStatusBarText.Text += "Found!!!";
-                    }
-                }
-            }
-            else
-            {
-                if (e.Type == expectedPosture)
-                {
-                    this.score += 1;
-                    this.tb_vitruviusX.Text = score.ToString();
-
-                    this.previouslyExpectedPosture = this.expectedPosture;
-                    if (this.expectedPosture == GestureType.LetterW)
-                    {
-                        this.expectedPosture = GestureType.HandsInTheAir;
-                        this.kinectVitruvius.flagDrawLetterWSkeleton = false;
-                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = true;
-                    }
-                    else if (this.expectedPosture == GestureType.HandsInTheAir)
-                    {
-                        this.expectedPosture = GestureType.LetterW;
-                        this.kinectVitruvius.flagDrawLetterWSkeleton = true;
-                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = false;
-                    }
-                }
-            }
-
-            // Do something according to the type of the gesture.
-            switch (e.Type)
-            {
-                case GestureType.LetterW:
-                    break;
-                case GestureType.HandsInTheAir:
-                    break;
-                case GestureType.NoGesture:
-                    break;
-                case GestureType.JoinedHands:
-                    break;
-                case GestureType.Menu:
-                    break;
-                case GestureType.SwipeDown:
-                    break;
-                case GestureType.SwipeLeft:
-                    break;
-                case GestureType.SwipeRight:
-                    break;
-                case GestureType.SwipeUp:
-                    break;
-                case GestureType.WaveLeft:
-                    break;
-                case GestureType.WaveRight:
-                    break;
-                case GestureType.ZoomIn:
-                    break;
-                case GestureType.ZoomOut:
-                    break;
-                default:
-                    break;
-            }
         }
 
         private void Deinit()
         {
             robot.Dispose();
-            this.bw.Dispose();
         }
 
         private void NextTabPage()
@@ -220,19 +120,59 @@ namespace SSN_II_Robot
             }
         }
 
-        private void Exit()
+        #region button handlers
+
+        private void NextTab_Button_Click(object sender, RoutedEventArgs e)
         {
-            Deinit();
-            Close();
+            this.NextTabPage();
+        }
+
+        private void PreviousTab_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.PreviousTabPage();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Deinit();
+            this.Close();
         }
 
         /// <summary>
-        /// Function to play music from wave
+        /// Button to test sound and switch to another tab
         /// </summary>
-        private void PlaySampleSound()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SoundButton(object sender, RoutedEventArgs e)
         {
-            this.robot.Outputs.Sound.Play("sound/shot.wav");
+            Tab5.IsSelected = true;
+            robot.Outputs.Sound.Play("sound/sport.wav");
         }
+
+        private void ServoSave(object sender, RoutedEventArgs e)
+        {
+            robot.Outputs.Servos.SaveData(tb_ServoName.Text);
+        }
+
+        private void ServoReset(object sender, RoutedEventArgs e)
+        {
+            this.robot.Outputs.Servos.ResetServos();
+            this.PresentServo(robot.Outputs.Servos);
+        }
+        
+        private void btn_LedOff_Click(object sender, RoutedEventArgs e)
+        {
+            this.robot.Outputs.Leds.TurnOff();
+        }
+
+        private void btn_LedSetBasedOnSliders_Click(object sender, RoutedEventArgs e)
+        {
+            this.robot.Outputs.Leds.SetLedColors(CLeds.LedType.Bottom, new CLeds.SColor(Convert.ToInt32(slider_R.Value), Convert.ToInt32(slider_G.Value), Convert.ToInt32(slider_B.Value)));
+            this.robot.Outputs.Leds.SetLedColors(CLeds.LedType.Chasis, new CLeds.SColor(Convert.ToInt32(slider_R.Value), Convert.ToInt32(slider_G.Value), Convert.ToInt32(slider_B.Value)));
+            this.robot.Outputs.Leds.SetLedColors(CLeds.LedType.Eyes, new CLeds.SColor(Convert.ToInt32(slider_R.Value), Convert.ToInt32(slider_G.Value), Convert.ToInt32(slider_B.Value)));
+        }
+
+        #endregion
 
         void mainTimer_Tick(object sender, EventArgs e)
         {
@@ -258,30 +198,10 @@ namespace SSN_II_Robot
             //bw.RunWorkerAsync(bwCounter);
         }
 
-        #region Background worker code
-
-        System.ComponentModel.BackgroundWorker bw;
-
-        int bwCounter = 0;
-
-        void bw_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void SequenceTest(object sender, RoutedEventArgs e)
         {
-            int value = (int)e.Result;
-
-            tb_gamma.Text = "Done " + value.ToString() + "!";
-
-            bwCounter = value + 1;
+            tbTest.AppendText("Zaczynamy! \r\n");
         }
-
-        void bw_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            int value = (int)e.Argument;
-
-            e.Result = value + 1;
-        }
-        
-        #endregion
-
 
         #region KOD prezentacji
 
@@ -408,42 +328,8 @@ namespace SSN_II_Robot
             lbl_ML.Content = speedLeft;
         }
 
-        /// <summary>
-        /// Button to test sound
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SoundButton(object sender, RoutedEventArgs e)
-        {
-            robot.Outputs.Sound.Play("sound/sport.wav");
-        }
-
-
         private void PresentPower(CPower power)
         {
-            // TODO - move this logic to CPower class and return appropriate length and status
-
-            /*
-            double width = power.Voltage / robot.Inputs.Power.VoltageMaxValuePresentation * 400;
-
-            rect_Voltage.Width = width;
-
-            if (power.Status == CPower.PowerStatus.Critical)
-            {
-                rect_Voltage.Fill = Brushes.Red;
-            }
-            else if (power.Status == CPower.PowerStatus.Warning)
-            {
-                rect_Voltage.Fill = Brushes.Orange;
-            }
-            else
-            {
-                rect_Voltage.Fill = Brushes.Green;
-            }
-
-            lbl_Voltage.Content = power.Voltage.ToString("00.00");
-            lbl_VoltageEnum.Content = power.Status;
-             * */
             rect_Voltage.Width = power.GetCurrentVoltageToMaxRatio() * 400.0;
             rect_Voltage.Fill = power.GetColorBasedOnStatus();
 
@@ -466,72 +352,45 @@ namespace SSN_II_Robot
             tb_ServoR4.Text = servo.servosPosition[(int)CServo.ServoType.Right4].ToString();
         }
 
-        private void PresentAngle(CKinect skeleton)
+        #endregion
+
+        #region SIMULATION code
+        const int SIMULATION_buttonsCount = 6;
+        bool[] SIMULATION_buttons = new bool[SIMULATION_buttonsCount];
+
+        private void btn_0_Click(object sender, RoutedEventArgs e)
         {
-            tb_alpha.Text =  skeleton.degrees.X.ToString();
-            tb_beta.Text = skeleton.degrees.Y.ToString();
+            SIMULATION_buttons[0] = !SIMULATION_buttons[0];
+        }
+
+        private void btn_1_Click(object sender, RoutedEventArgs e)
+        {
+            SIMULATION_buttons[1] = !SIMULATION_buttons[1];
+        }
+
+        private void btn_2_Click(object sender, RoutedEventArgs e)
+        {
+            SIMULATION_buttons[2] = !SIMULATION_buttons[2];
+        }
+
+        private void btn_3_Click(object sender, RoutedEventArgs e)
+        {
+            SIMULATION_buttons[3] = !SIMULATION_buttons[3];
+        }
+
+        private void btn_4_Click(object sender, RoutedEventArgs e)
+        {
+            SIMULATION_buttons[4] = !SIMULATION_buttons[4];
+        }
+
+        private void btn_5_Click(object sender, RoutedEventArgs e)
+        {
+            SIMULATION_buttons[5] = !SIMULATION_buttons[5];
         }
 
         #endregion
-
-        #region PRZYCISKI KIERUNKOWE NA STRONACH
-
-        private void MenuPrev_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab4.IsSelected = true;
-        }
-
-        private void MenuNext_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab2.IsSelected = true;
-        }
-
-        private void Tab2Prev_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab1.IsSelected = true;
-        }
-
-        private void Tab2Next_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab3.IsSelected = true;
-        }
-
-        private void Tab3Prev_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab2.IsSelected = true;
-        }
-
-        private void Tab3Next_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab4.IsSelected = true;
-        }
-
-        private void Tab4Prev_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab3.IsSelected = true;
-        }
-
-        private void Tab4Next_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Tab1.IsSelected = true;
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            robot.Dispose();
-            Close();
-        }
-
-        #endregion
-
-
-        // TODO - zrobić coś z tym kodem!
-        private void Window_Closing_1(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Deinit();
-        }
-
-
+        
+        #region code for movie playback
         private int currentIndex = 0;
         private TimeSpan moviePosition;
 
@@ -549,189 +408,95 @@ namespace SSN_II_Robot
 
             currentIndex = tcMain.SelectedIndex;
         }
-      
-        #region SIMULATION code
-        const int SIMULATION_buttonsCount = 6;
-        bool[] SIMULATION_buttons = new bool[SIMULATION_buttonsCount];
-
-        private void btn_0_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[0] = !SIMULATION_buttons[0];
-        }
-
-        private void btn_1_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[1] = !SIMULATION_buttons[1];
-        }
-
-        private void btn_2_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[2] = !SIMULATION_buttons[2];
-        }
-
-        private void btn_3_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[3] = !SIMULATION_buttons[3];
-        }
-
-        private void btn_4_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[4] = !SIMULATION_buttons[4];
-        }
-
-        private void btn_5_Click(object sender, RoutedEventArgs e)
-        {
-            //SIMULATION_buttons[5] = !SIMULATION_buttons[5];
-        }
-
         #endregion
-  
-        private void MainWindow1_Loaded(object sender, RoutedEventArgs e)
+
+        #region Kinect Virtivius code
+        CKinectVitruvius kinectVitruvius;
+        private GestureType expectedPosture = GestureType.None;
+        private GestureType previouslyExpectedPosture = GestureType.None;
+        private int score = 0;
+
+        private void GestureRecognized(object sender, GestureEventArgs e)
         {
-            Init();
-        }
+            // Display the gesture type.
+            this.vitruviusStatusBarText.Text = e.Name;
 
-        private void testButtonLed_01_Click(object sender, RoutedEventArgs e)
-        {
-            testLed_1.Visibility = System.Windows.Visibility.Hidden;
-            System.Threading.Thread.Sleep(2000);
-            testLed_1.Visibility = System.Windows.Visibility.Visible;
-            System.Threading.Thread.Sleep(2000);
-            testLed_1.Visibility = System.Windows.Visibility.Hidden;
+            if (this.robot.CurrentState == CRobot.RobotState.Kinect)
+            {
+                if (this.robot.kinectSate == CRobot.KinectState.RightUp1 || this.robot.kinectSate == CRobot.KinectState.RightUp2 || this.robot.kinectSate == CRobot.KinectState.RightUp3)
+                {
+                    this.vitruviusStatusBarText.Text += ", waiting for RightUp";
+                    if (e.Type == GestureType.RightUp)
+                    {
+                        this.robot.flagKinectRequiredPostionDone = true;
+                        this.vitruviusStatusBarText.Text += "Found!!!";
+                    }
+                }
+                else
+                {
+                    this.vitruviusStatusBarText.Text += ", waiting for LetterSmallW";
+                    if (e.Type == GestureType.LetterSmallW)
+                    {
+                        this.robot.flagKinectRequiredPostionDone = true;
+                        this.vitruviusStatusBarText.Text += "Found!!!";
+                    }
+                }
+            }
+            else
+            {
+                if (e.Type == expectedPosture)
+                {
+                    this.score += 1;
+                    this.tb_vitruviusX.Text = score.ToString();
 
-            //for (int i = 0; i < 10; i++)
-            //{
+                    this.previouslyExpectedPosture = this.expectedPosture;
+                    if (this.expectedPosture == GestureType.LetterW)
+                    {
+                        this.expectedPosture = GestureType.HandsInTheAir;
+                        this.kinectVitruvius.flagDrawLetterWSkeleton = false;
+                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = true;
+                    }
+                    else if (this.expectedPosture == GestureType.HandsInTheAir)
+                    {
+                        this.expectedPosture = GestureType.LetterW;
+                        this.kinectVitruvius.flagDrawLetterWSkeleton = true;
+                        this.kinectVitruvius.flagDrawHandsInTheAirSkeleton = false;
+                    }
+                }
+            }
 
-            //    testLed_1.Visibility = System.Windows.Visibility.Hidden;
-            //    testLed_2.Visibility = System.Windows.Visibility.Hidden;
-            //    testLed_3.Visibility = System.Windows.Visibility.Hidden;
-                
-                
-            //    if (i % 2 == 0)
-            //    {
-            //        tbTest.AppendText("Weszlo!\r\n");
-            //        testLed_1.Visibility = System.Windows.Visibility.Hidden;
-            //        System.Threading.Thread.Sleep(1000);
-            //    }
-            //    else
-            //    {
-            //        tbTest.AppendText("Weszlo, ale...\r\n");
-            //        testLed_1.Visibility = System.Windows.Visibility.Visible;
-            //        System.Threading.Thread.Sleep(1000);
-            //    }
-            //}
-            
-        }
-
-        private void testButtonLed_02_Click(object sender, RoutedEventArgs e)
-        {
-            testLed_1.Visibility = System.Windows.Visibility.Visible;
-       
-        }
-
-        private void SequenceTest(object sender, RoutedEventArgs e)
-        {
-            tbTest.AppendText("Zaczynamy! \r\n");
-        }
-
-        /// <summary>
-        /// Action for SaveData button on Spine screen, change flag to true if it's pressed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btn_SaveKinect_Click(object sender, RoutedEventArgs e)
-        {
-            //robot.Kinect.SaveDataIsPressed = true;
-            //if (robot.Kinect.SaveDataIsPressed)
-            //{
-            //    //lbl_SaveDataState.Visibility = System.Windows.Visibility.Visible;
-            //}
-        }
-
-        private void ServoSave(object sender, RoutedEventArgs e)
-        {   
-            robot.Outputs.Servos.SaveData(tb_ServoName.Text);
-        }
-
-        private void ServoReset(object sender, RoutedEventArgs e)
-        {
-            // ------ zakomentowany kod realizowany funkcja ResetServos(), ale jeszcze nie przetestowane -------- //
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left1, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left2, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left3, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Left4, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right1, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right2, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right3, 0);
-            //robot.Outputs.Servos.SetServoPosition(CServo.ServoType.Right4, 0);
-
-            this.robot.Outputs.Servos.ResetServos();
-            this.PresentServo(robot.Outputs.Servos);
-            
-        }
-
-        private void Label_DragOver(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void Label_DragOver_1(object sender, DragEventArgs e)
-        {
-
-        }
-
-        /** Part were I try draw a robot skeleton from file **/
-        private void drawRobot_Click(object sender, RoutedEventArgs e)
-        {
-            //OpenFileDialog openFileDialog = new OpenFileDialog { Title = "Select filename", Filter = "Replay files|*.replay" };
-
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //    if (replay != null)
-            //    {
-            //        replay.SkeletonFrameReady -= replay_SkeletonFrameReady;
-            //        replay.ColorImageFrameReady -= replay_ColorImageFrameReady;
-            //        replay.Stop();
-            //    }
-            //    Stream recordStream = File.OpenRead(openFileDialog.FileName);
-
-            //    replay = new KinectReplay(recordStream);
-
-            //    replay.SkeletonFrameReady += replay_SkeletonFrameReady;
-            //    replay.ColorImageFrameReady += replay_ColorImageFrameReady;
-            //    replay.DepthImageFrameReady += replay_DepthImageFrameReady;
-
-            //    replay.Start();
-            //}
-        }
-
-        //void replay_SkeletonFrameReady(object sender, ReplaySkeletonFrameReadyEventArgs e)
-        //{
-        //    robot.Kinect.ProcessFrame(e.SkeletonFrame);
-        //}
-
-        //void replay_DepthImageFrameReady(object sender, ReplayDepthImageFrameReadyEventArgs e)
-        //{
-        //    if (!displayDepth)
-        //        return;
-
-        //    depthManager.Update(e.DepthImageFrame);
-        //}
-
-        //void replay_ColorImageFrameReady(object sender, ReplayColorImageFrameReadyEventArgs e)
-        //{
-        //    if (displayDepth)
-        //        return;
-
-        //    colorManager.Update(e.ColorImageFrame);
-        //}
-
-        /** Pop Up pn screen **/
-        private void btn_Fullscreen_Click(object sender, RoutedEventArgs e)
-        {
-            Tab5.IsSelected = true;
-            SoundPlayer player = new SoundPlayer("sound/nos.wav");
-            player.Play();
+            // Do something according to the type of the gesture.
+            switch (e.Type)
+            {
+                case GestureType.LetterW:
+                    break;
+                case GestureType.HandsInTheAir:
+                    break;
+                case GestureType.NoGesture:
+                    break;
+                case GestureType.JoinedHands:
+                    break;
+                case GestureType.Menu:
+                    break;
+                case GestureType.SwipeDown:
+                    break;
+                case GestureType.SwipeLeft:
+                    break;
+                case GestureType.SwipeRight:
+                    break;
+                case GestureType.SwipeUp:
+                    break;
+                case GestureType.WaveLeft:
+                    break;
+                case GestureType.WaveRight:
+                    break;
+                case GestureType.ZoomIn:
+                    break;
+                case GestureType.ZoomOut:
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void btn_VitriuviusDrawSavedSkeleton_Click(object sender, RoutedEventArgs e)
@@ -749,7 +514,8 @@ namespace SSN_II_Robot
         {
             this.kinectVitruvius.SaveHandsInTheAirSkeleton();
         }
-       
+
+        #endregion
 
     }
 }

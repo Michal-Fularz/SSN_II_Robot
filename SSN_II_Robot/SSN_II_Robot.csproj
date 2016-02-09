@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -39,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -169,10 +170,6 @@
       <Project>{2ff14054-377f-445e-a427-192c0352ea46}</Project>
       <Name>CKinectVitruvius</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CKinect\CKinect.csproj">
-      <Project>{867ea1e7-8119-4d2f-8ad4-8bbd8c01f017}</Project>
-      <Name>CKinect</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CLeds\CLeds.csproj">
       <Project>{2679f231-30e7-4935-982a-296c88fabb8e}</Project>
       <Name>CLeds</Name>
@@ -180,6 +177,10 @@
     <ProjectReference Include="..\CMotors\CMotors.csproj">
       <Project>{708ff791-4acc-4776-b735-78e51cce777f}</Project>
       <Name>CMotors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\COutputs\COutputs.csproj">
+      <Project>{262956f2-a539-44a3-b5e3-6e945a12e662}</Project>
+      <Name>COutputs</Name>
     </ProjectReference>
     <ProjectReference Include="..\CPower\CPower.csproj">
       <Project>{ca9a906f-5bb2-464a-8d5d-e7a59c7d66ad}</Project>

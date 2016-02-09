@@ -214,10 +214,10 @@
 
 
 
-                    <Button x:Name="MenuPrev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="MenuPrev_Button_Click">
+                    <Button x:Name="MenuPrev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="PreviousTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\rw.png"/>
                     </Button>
-                    <Button x:Name="MenuNext_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="MenuNext_Button_Click">
+                    <Button x:Name="MenuNext_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="NextTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
                     <MediaElement Name="meMain" HorizontalAlignment="Left" Height="580" Margin="248,22,0,0" VerticalAlignment="Top" Width="774" Source="MI_Robotyka.wmv" LoadedBehavior="Play"/>
@@ -318,10 +318,10 @@
                         </Grid>
                     </GroupBox>
 
-                    <Button x:Name="Tab2Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab2Prev_Button_Click">
+                    <Button x:Name="Tab2Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="PreviousTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\rw.png"/>
                     </Button>
-                    <Button x:Name="Tab2Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab2Next_Button_Click">
+                    <Button x:Name="Tab2Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="NextTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
                     <RichTextBox x:Name="rtbMain" HorizontalAlignment="Left" Height="230" Margin="460,274,0,0" VerticalAlignment="Top" Width="764">
@@ -371,32 +371,32 @@
                         </GroupBox>
                         <GroupBox Grid.Row="2" Header="Save data" FontSize="36" Margin="438,5,585,5">
                             <Grid>
-                                <Button x:Name="btn_SaveKinect" Content="Save" HorizontalAlignment="Center" Height="49" Margin="10,7,23,10" VerticalAlignment="Center" Width="146" FontSize="18" Click="btn_SaveKinect_Click"/>
+                                <Button x:Name="btn_SaveKinect" Content="Save" HorizontalAlignment="Center" Height="49" Margin="10,7,23,10" VerticalAlignment="Center" Width="146" FontSize="18"/>
                             </Grid>
                         </GroupBox>
                         <GroupBox Grid.Row="2" Header="Draw Robot" FontSize="36" Margin="634,5,356,5">
                             <Grid>
-                                <Button x:Name="btn_drawRobot" Content="Draw" HorizontalAlignment="Center" Height="49" VerticalAlignment="Center" Width="149" FontSize="18" RenderTransformOrigin="-0.178,0.755" Margin="10,8,53,10" Click="drawRobot_Click" />
+                                <Button x:Name="btn_drawRobot" Content="Draw" HorizontalAlignment="Center" Height="49" VerticalAlignment="Center" Width="149" FontSize="18" RenderTransformOrigin="-0.178,0.755" Margin="10,8,53,10" />
                             </Grid>
                         </GroupBox>
 
                     </Grid>
 
-                    <Button x:Name="Tab3Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab3Prev_Button_Click">
+                    <Button x:Name="Tab3Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="PreviousTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\rw.png"/>
                     </Button>
-                    <Button x:Name="Tab3Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab3Next_Button_Click">
+                    <Button x:Name="Tab3Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="NextTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
                     <Label x:Name="lbl_IsCorrect" Content="Label" HorizontalAlignment="Left" Height="36" Margin="682,643,0,20" VerticalAlignment="Center" Width="90" Visibility="Hidden"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="Tab4" Header="Status" FontFamily="Segoe UI Light" Loaded="SequenceTest">
-                <Grid Background="#FFE5E5E5"  Margin="1,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234" >
-                    <Button x:Name="Tab4Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab4Prev_Button_Click">
+                <Grid Background="#FFE5E5E5"  Margin="1,1,1,1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="699" Width="1234" >
+                    <Button x:Name="Tab4Prev_Button" Margin="1050,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="PreviousTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\rw.png"/>
                     </Button>
-                    <Button x:Name="Tab4Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="Tab4Next_Button_Click">
+                    <Button x:Name="Tab4Next_Button" Margin="1164,629,20,20" Width="50" Height="50" Background="Black" Style="{StaticResource GlassButton}" Click="NextTab_Button_Click">
                         <Image Width="18" Height="18" Source="Pictures\ff.png"/>
                     </Button>
                     <GroupBox x:Name="gb_Sound" Header="Dźwięk" HorizontalAlignment="Left" Height="159" Margin="10,10,0,0" VerticalAlignment="Top" Width="245">
@@ -414,7 +414,7 @@
 
                             <Label Grid.Column="0" Grid.Row="0" x:Name="lbl_nazwaUtworu" Grid.ColumnSpan="2"/>
                             <Label Grid.Column="2" Grid.Row="0" x:Name="lbl_dlugosc" />
-                            <Button x:Name="btn_Sound" Height="31" Width="43" VerticalAlignment="Center" Content="S" Click="SoundButton" HorizontalAlignment="Center" Margin="10,12,64,0" Grid.ColumnSpan="2"/>
+                            <Button x:Name="btn_Sound" Height="31" Width="213" VerticalAlignment="Bottom" Content="Play sample sound" Click="SoundButton" HorizontalAlignment="Center" Margin="10,0" Grid.ColumnSpan="3"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox x:Name="gb_Servo" Header="Servo" HorizontalAlignment="Left" Height="382" Margin="508,10,0,0" VerticalAlignment="Top" Width="622">
@@ -441,16 +441,14 @@
                             <TextBox x:Name="tb_ServoName" Margin="228,11,88,302" Tag="name"/>
                             <Button x:Name="btn_ServoSave" Height="30" Width="294" VerticalAlignment="Center" Content="Save" Click="ServoSave" HorizontalAlignment="Center" Margin="228,57,88,265"/>
                             <Button x:Name="btn_Reset" Height="50" Width="294" VerticalAlignment="Center" Content="Reset" HorizontalAlignment="Center" Click="ServoReset" Margin="228,292,88,10" RenderTransformOrigin="0.4,0.14"/>
-                            <TextBox x:Name="tb_testowy" Height="31" Margin="280,249,221,0" Text="przyklad" VerticalAlignment="Top" Width="109"/>
                         </Grid>
                     </GroupBox>
-                    <Ellipse x:Name="testLed_1" Fill="#FFEFFF8C" HorizontalAlignment="Left" Height="43" Margin="128,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
-                    <Ellipse x:Name="testLed_2" Fill="#FF5353D8" HorizontalAlignment="Left" Height="43" Margin="176,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
-                    <Ellipse x:Name="testLed_3" Fill="#FFE63083" HorizontalAlignment="Left" Height="43" Margin="224,175,0,0" Stroke="Black" VerticalAlignment="Top" Width="43" Visibility="Hidden"/>
-                    <Button x:Name="testButtonLed_01" Content="Sequence 1" HorizontalAlignment="Left" Height="30" Margin="10,245,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_01_Click"/>
-                    <Button x:Name="testButtonLed_02" Content="Sequence 2" HorizontalAlignment="Left" Height="30" Margin="10,280,0,0" VerticalAlignment="Top" Width="131" Click="testButtonLed_02_Click"/>
                     <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="300" Margin="291,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="212"/>
-                    <Button x:Name="btn_Fullscreen" Content="Fullscreen" HorizontalAlignment="Left" Height="30" Margin="10,315,0,0" VerticalAlignment="Top" Width="131" Click="btn_Fullscreen_Click"/>
+                    <Button x:Name="btn_LedOff" Height="50" Width="164" VerticalAlignment="Center" Content="LedOff" HorizontalAlignment="Center" Margin="69,389,1001,260" RenderTransformOrigin="0.4,0.14" Click="btn_LedOff_Click"/>
+                    <Slider x:Name="slider_R" ValueChanged="SliderL_ValueChanged" Minimum="0" Maximum="255" Orientation="Horizontal" IsSnapToTickEnabled="True" HorizontalAlignment="Center" Margin="29,444,950,231" SmallChange="10" Width="255"/>
+                    <Slider x:Name="slider_G" ValueChanged="SliderL_ValueChanged" Minimum="0" Maximum="255" Orientation="Horizontal" IsSnapToTickEnabled="True" HorizontalAlignment="Center" Margin="29,473,950,202" SmallChange="10" Width="255"/>
+                    <Slider x:Name="slider_B" ValueChanged="SliderL_ValueChanged" Minimum="0" Maximum="255" Orientation="Horizontal" IsSnapToTickEnabled="True" HorizontalAlignment="Center" Margin="29,502,950,173" SmallChange="10" Width="255"/>
+                    <Button x:Name="btn_LedSetBasedOnSliders" Height="50" Width="164" VerticalAlignment="Center" Content="LedSetBasedOnSliders" HorizontalAlignment="Center" Margin="69,531,1001,118" RenderTransformOrigin="0.4,0.14" Click="btn_LedSetBasedOnSliders_Click"/>
 
 
 
