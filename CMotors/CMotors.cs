@@ -156,18 +156,18 @@ namespace MAF_Robot
             }
             else if (angle >= 10 && angle < 30)
             {
-                motorSpeedRight = 0.0F;
-                motorSpeedLeft = 1.2F;
+                motorSpeedRight = 1.2F;
+                motorSpeedLeft = 0.0F;
             }
             else if (angle >= 30 && angle < 50)
             {
-                motorSpeedRight = 0.15F;
-                motorSpeedLeft = 1.2F;
+                motorSpeedRight = 1.2F;
+                motorSpeedLeft = 0.15F; 
             }
             else if (angle >= 50 && angle < 70)
             {
-                motorSpeedRight = 0.3F;
-                motorSpeedLeft = 1.2F;
+                motorSpeedRight = 1.2F;
+                motorSpeedLeft = 0.3F; 
             }
             else if (angle >= 70 && angle < 110)
             {
@@ -176,18 +176,18 @@ namespace MAF_Robot
             }
             else if (angle >= 110 && angle < 130)
             {
-                motorSpeedRight = 1.2F;
-                motorSpeedLeft = 0.3F;
+                motorSpeedRight = 0.3F;
+                motorSpeedLeft = 1.2F;
             }
             else if (angle >= 130 && angle < 150)
             {
-                motorSpeedRight = 1.2F;
-                motorSpeedLeft = 0.15F;
+                motorSpeedRight = 0.15F;
+                motorSpeedLeft = 1.2F; 
             }
             else if (angle >= 150 && angle < 170)
             {
-                motorSpeedRight = 1.2F;
-                motorSpeedLeft = 0.0F;
+                motorSpeedRight = 0.0F;
+                motorSpeedLeft = 1.2F;
             }
             // szczególny przypadek
             // skręt w prawo
@@ -202,11 +202,11 @@ namespace MAF_Robot
                 motorSpeedLeft = 0.0;
             }
 
-            double maxSpeed = 35;
-            double minSpeed = -35;
-
-            motorSpeedRight = power * maxSpeed * motorSpeedRight;
-            motorSpeedLeft = power * maxSpeed * motorSpeedLeft;
+            const double speedCoefficient = 35;
+            // power is from 0 to 1, motorSpeedX is from -1.2 to 1.2
+            // the result should not exceed range -100 to 100, but lower is preferable so the robot is not too fast
+            motorSpeedRight = power * motorSpeedRight * speedCoefficient;
+            motorSpeedLeft = power * motorSpeedLeft * speedCoefficient;
 
             if (motorSpeedRight > MaxSpeedRightWheel)
                 motorSpeedRight = MaxSpeedRightWheel;

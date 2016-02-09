@@ -25,10 +25,5 @@ namespace MAF_Robot
             Gamepad = new CGamepad();
             Power = new CPower();
         }
-
-        public void Read()
-        {
-            throw new NotImplementedException();
-        }
     }  
 }

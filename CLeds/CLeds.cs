@@ -50,7 +50,6 @@ namespace MAF_Robot
             }
         }
 
-        // ta funkcja miała chyba ustawiać kolor
         public void SetLedColors(LedType type, SColor rgb)
         {
             this.ledState[(int)type].R = rgb.R;

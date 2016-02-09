@@ -67,7 +67,7 @@ namespace MAF_Robot
         }
 
         /// <summary>
-        /// Function to reset all servos position
+        /// Function to reset all servos positions
         /// </summary>
         public void ResetServos()
         {
